@@ -1,8 +1,8 @@
 #pragma once
 
 #include <ffi.h>
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
-namespace Hyprwire::FFI {
+namespace Abysswire::FFI {
     ffi_type* ffiTypeFrom(eMessageMagic magic);
 }

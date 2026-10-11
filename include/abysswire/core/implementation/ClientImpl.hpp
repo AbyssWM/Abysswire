@@ -1,10 +1,10 @@
 #pragma once
 
-#include <hyprutils/memory/SharedPtr.hpp>
+#include <abyssutils/memory/SharedPtr.hpp>
 #include <vector>
 #include <cstdint>
 
-namespace Hyprwire {
+namespace Abysswire {
     class IProtocolSpec;
 
     struct SClientObjectImplementation {
@@ -16,8 +16,8 @@ namespace Hyprwire {
       public:
         virtual ~IProtocolClientImplementation();
 
-        virtual Hyprutils::Memory::CSharedPointer<IProtocolSpec>                            protocol()       = 0;
-        virtual std::vector<Hyprutils::Memory::CSharedPointer<SClientObjectImplementation>> implementation() = 0;
+        virtual Abyssutils::Memory::CSharedPointer<IProtocolSpec>                            protocol()       = 0;
+        virtual std::vector<Abyssutils::Memory::CSharedPointer<SClientObjectImplementation>> implementation() = 0;
 
       protected:
         IProtocolClientImplementation() = default;

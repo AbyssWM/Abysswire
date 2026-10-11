@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.19)
 
 project(
-  hyprwire-scanner
-  DESCRIPTION "A protocol code generator for hyprwire"
-  VERSION ${HYPRWIRE_VERSION})
+  abysswire-scanner
+  DESCRIPTION "A protocol code generator for abysswire"
+  VERSION ${ABYSSWIRE_VERSION})
 
 include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
@@ -17,9 +17,9 @@ set(CMAKE_CXX_STANDARD 23)
 add_compile_options(-Wall -Wextra -Wno-unused-parameter -Wno-unused-value
                     -Wno-missing-field-initializers -Wno-narrowing)
 
-add_compile_definitions(SCANNER_VERSION="${HYPRWIRE_VERSION}")
+add_compile_definitions(SCANNER_VERSION="${ABYSSWIRE_VERSION}")
 
-configure_file(hyprwire-scanner.pc.in hyprwire-scanner.pc @ONLY)
+configure_file(abysswire-scanner.pc.in abysswire-scanner.pc @ONLY)
 
 # dependencies
 message(STATUS "Checking deps...")
@@ -35,26 +35,26 @@ else()
   set(LIBRT rt)
 endif()
 
-add_executable(hyprwire-scanner main.cpp)
-target_link_libraries(hyprwire-scanner PRIVATE ${LIBRT} Threads::Threads
+add_executable(abysswire-scanner main.cpp)
+target_link_libraries(abysswire-scanner PRIVATE ${LIBRT} Threads::Threads
                                                PkgConfig::deps)
 
-target_include_directories(hyprwire-scanner
+target_include_directories(abysswire-scanner
                            PUBLIC "${CMAKE_SOURCE_DIR}/include")
 
 configure_package_config_file(
-  hyprwire-scanner-config.cmake.in hyprwire-scanner-config.cmake
-  INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/hyprwire-scanner"
+  abysswire-scanner-config.cmake.in abysswire-scanner-config.cmake
+  INSTALL_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/abysswire-scanner"
   PATH_VARS CMAKE_INSTALL_BINDIR)
 write_basic_package_version_file(
-  "hyprwire-scanner-config-version.cmake"
+  "abysswire-scanner-config-version.cmake"
   VERSION "${VERSION}" ARCH_INDEPENDENT
   COMPATIBILITY AnyNewerVersion)
 
 # Installation
-install(TARGETS hyprwire-scanner)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/hyprwire-scanner.pc
+install(TARGETS abysswire-scanner)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/abysswire-scanner.pc
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/hyprwire-scanner-config.cmake
-              ${CMAKE_CURRENT_BINARY_DIR}/hyprwire-scanner-config-version.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/hyprwire-scanner)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/abysswire-scanner-config.cmake
+              ${CMAKE_CURRENT_BINARY_DIR}/abysswire-scanner-config-version.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/abysswire-scanner)

@@ -3,7 +3,7 @@
 #include <sys/poll.h>
 #include <sys/socket.h>
 
-namespace Hyprwire::Syscalls {
+namespace Abysswire::Syscalls {
     using PFN_poll    = int (*)(pollfd* fds, nfds_t nfds, int timeout);
     using PFN_sendmsg = ssize_t (*)(int sockfd, const msghdr* msg, int flags);
     using PFN_recvmsg = ssize_t (*)(int sockfd, msghdr* msg, int flags);

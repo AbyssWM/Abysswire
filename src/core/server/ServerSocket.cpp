@@ -18,11 +18,11 @@
 #include <unistd.h>
 
 #include <filesystem>
-#include <hyprutils/utils/ScopeGuard.hpp>
+#include <abyssutils/utils/ScopeGuard.hpp>
 
-using namespace Hyprwire;
-using namespace Hyprutils::OS;
-using namespace Hyprutils::Utils;
+using namespace Abysswire;
+using namespace Abyssutils::OS;
+using namespace Abyssutils::Utils;
 
 SP<IServerSocket> IServerSocket::open(const std::string& path) {
     SP<CServerSocket> sock = makeShared<CServerSocket>();
@@ -178,7 +178,7 @@ bool CServerSocket::dispatchEvents(bool block) {
     return true;
 }
 
-void CServerSocket::clearFd(const Hyprutils::OS::CFileDescriptor& fd) {
+void CServerSocket::clearFd(const Abyssutils::OS::CFileDescriptor& fd) {
     char   buf[128];
     pollfd pfd = {
         .fd     = fd.get(),

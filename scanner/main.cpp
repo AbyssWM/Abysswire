@@ -9,10 +9,10 @@
 
 #include <pugixml.hpp>
 
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
 struct SRequestArgument {
-    Hyprwire::eMessageMagic magic = Hyprwire::HW_MESSAGE_MAGIC_END, arrType = Hyprwire::HW_MESSAGE_MAGIC_END;
+    Abysswire::eMessageMagic magic = Abysswire::HW_MESSAGE_MAGIC_END, arrType = Abysswire::HW_MESSAGE_MAGIC_END;
     std::string             interface;
     std::string             name;
     bool                    allowNull = false;
@@ -85,62 +85,62 @@ static std::string uppercase(std::string str) {
     return str;
 }
 
-static Hyprwire::eMessageMagic strToMagic(const std::string_view& sv) {
+static Abysswire::eMessageMagic strToMagic(const std::string_view& sv) {
     if (sv == "varchar")
-        return Hyprwire::HW_MESSAGE_MAGIC_TYPE_VARCHAR;
+        return Abysswire::HW_MESSAGE_MAGIC_TYPE_VARCHAR;
     if (sv == "uint")
-        return Hyprwire::HW_MESSAGE_MAGIC_TYPE_UINT;
+        return Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT;
     if (sv == "enum")
-        return Hyprwire::HW_MESSAGE_MAGIC_TYPE_UINT;
+        return Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT;
     if (sv == "int")
-        return Hyprwire::HW_MESSAGE_MAGIC_TYPE_INT;
+        return Abysswire::HW_MESSAGE_MAGIC_TYPE_INT;
     if (sv == "f32")
-        return Hyprwire::HW_MESSAGE_MAGIC_TYPE_F32;
+        return Abysswire::HW_MESSAGE_MAGIC_TYPE_F32;
     if (sv == "fd")
-        return Hyprwire::HW_MESSAGE_MAGIC_TYPE_FD;
+        return Abysswire::HW_MESSAGE_MAGIC_TYPE_FD;
     // if (sv == "object")
-    //     return Hyprwire::HW_MESSAGE_MAGIC_TYPE_OBJECT_ID;
+    //     return Abysswire::HW_MESSAGE_MAGIC_TYPE_OBJECT_ID;
     if (sv.starts_with("array "))
-        return Hyprwire::HW_MESSAGE_MAGIC_TYPE_ARRAY;
-    return Hyprwire::HW_MESSAGE_MAGIC_END;
+        return Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY;
+    return Abysswire::HW_MESSAGE_MAGIC_END;
 }
 
-static std::string magicToString(Hyprwire::eMessageMagic m, Hyprwire::eMessageMagic arrType = Hyprwire::HW_MESSAGE_MAGIC_END) {
+static std::string magicToString(Abysswire::eMessageMagic m, Abysswire::eMessageMagic arrType = Abysswire::HW_MESSAGE_MAGIC_END) {
     switch (m) {
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_VARCHAR: return "Hyprwire::HW_MESSAGE_MAGIC_TYPE_VARCHAR";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_UINT: return "Hyprwire::HW_MESSAGE_MAGIC_TYPE_UINT";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_INT: return "Hyprwire::HW_MESSAGE_MAGIC_TYPE_INT";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_F32: return "Hyprwire::HW_MESSAGE_MAGIC_TYPE_F32";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_FD: return "Hyprwire::HW_MESSAGE_MAGIC_TYPE_FD";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_ARRAY: return "Hyprwire::HW_MESSAGE_MAGIC_TYPE_ARRAY, " + magicToString(arrType);
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_VARCHAR: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_VARCHAR";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_INT: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_INT";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_F32: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_F32";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_FD: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_FD";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY, " + magicToString(arrType);
         default: return "";
     }
 }
 
-static std::string argToC(Hyprwire::eMessageMagic m) {
+static std::string argToC(Abysswire::eMessageMagic m) {
     switch (m) {
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_VARCHAR: return "const char*";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_UINT: return "uint32_t";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_INT: return "int32_t";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_F32: return "float";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_FD: return "int";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_VARCHAR: return "const char*";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT: return "uint32_t";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_INT: return "int32_t";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_F32: return "float";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_FD: return "int";
         default: return "";
     }
 }
 
 static std::string argToC(const SRequestArgument& arg) {
     switch (arg.magic) {
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_VARCHAR: return "const char*";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_UINT: {
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_VARCHAR: return "const char*";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT: {
             if (!arg.isEnum)
                 return "uint32_t";
 
             return camelize(PROTO_DATA.nameOriginal + "_" + arg.interface);
         }
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_INT: return "int32_t";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_F32: return "float";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_FD: return "int";
-        case Hyprwire::HW_MESSAGE_MAGIC_TYPE_ARRAY: return "const std::vector<" + argToC(arg.arrType) + ">&";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_INT: return "int32_t";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_F32: return "float";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_FD: return "int";
+        case Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY: return "const std::vector<" + argToC(arg.arrType) + ">&";
         default: return "";
     }
 }
@@ -160,7 +160,7 @@ static std::string argsToC(const std::vector<SRequestArgument>& args, bool noNam
     }
 
     for (const auto& m : args) {
-        if (m.arrType != Hyprwire::HW_MESSAGE_MAGIC_END && pureC) {
+        if (m.arrType != Abysswire::HW_MESSAGE_MAGIC_END && pureC) {
             if (noTypes)
                 cstr += std::format("{}.data(), (uint32_t){}.size(), ", m.name, m.name);
             else {
@@ -169,7 +169,7 @@ static std::string argsToC(const std::vector<SRequestArgument>& args, bool noNam
                 else
                     cstr += std::format("{}* {}, uint32_t {}, ", argToC(m.arrType), m.name, m.name + "_len");
             }
-        } else if (m.arrType != Hyprwire::HW_MESSAGE_MAGIC_END && unC) {
+        } else if (m.arrType != Abysswire::HW_MESSAGE_MAGIC_END && unC) {
             if (noTypes)
                 cstr += std::format("std::vector<{}>{{ {}, {} + {} }}, ", argToC(m.arrType), m.name, m.name, m.name + "_len");
             else {
@@ -245,7 +245,7 @@ static bool scanProtocol(const pugi::xml_document& doc) {
                         .name      = param.attribute("name").as_string(),
                         .allowNull = param.attribute("allow_null").as_bool(),
                     });
-                    if (a.magic == Hyprwire::HW_MESSAGE_MAGIC_TYPE_ARRAY)
+                    if (a.magic == Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY)
                         a.arrType = strToMagic(std::string{param.attribute("type").as_string()}.substr(6));
                 }
 
@@ -279,7 +279,7 @@ static bool scanProtocol(const pugi::xml_document& doc) {
                         .allowNull = param.attribute("allow_null").as_bool(),
                         .isEnum    = param.attribute("type").as_string() == std::string_view{"enum"},
                     });
-                    if (a.magic == Hyprwire::HW_MESSAGE_MAGIC_TYPE_ARRAY)
+                    if (a.magic == Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY)
                         a.arrType = strToMagic(std::string{param.attribute("type").as_string()}.substr(6));
                     continue;
                 }
@@ -304,9 +304,9 @@ static bool generateProtocolHeader(const pugi::xml_document& doc) {
     HEADER_PROTOCOL += R"#(
 #pragma once
 
-#include <hyprwire/core/types/MessageMagic.hpp>
-#include <hyprwire/hyprwire.hpp>
-#include <hyprutils/memory/WeakPtr.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
+#include <abysswire/abysswire.hpp>
+#include <abyssutils/memory/WeakPtr.hpp>
 #include <vector>
     )#";
 
@@ -327,7 +327,7 @@ enum {} : uint32_t {{
 
     for (const auto& object : OBJECT_SPECS) {
         HEADER_PROTOCOL += std::format(R"#(
-class C{}Spec : public Hyprwire::IProtocolObjectSpec {{
+class C{}Spec : public Abysswire::IProtocolObjectSpec {{
   public:
     C{}Spec() = default;
     virtual ~C{}Spec() = default;
@@ -341,7 +341,7 @@ class C{}Spec : public Hyprwire::IProtocolObjectSpec {{
 
         // Add C2S method arr and fn
 
-        HEADER_PROTOCOL += "\n\tstd::vector<Hyprwire::SMethod>                m_c2s = {";
+        HEADER_PROTOCOL += "\n\tstd::vector<Abysswire::SMethod>                m_c2s = {";
 
         for (const auto& m : object.c2s) {
 
@@ -354,7 +354,7 @@ class C{}Spec : public Hyprwire::IProtocolObjectSpec {{
                 argArrayStr = argArrayStr.substr(0, argArrayStr.size() - 2);
 
             HEADER_PROTOCOL += std::format(R"#(
-Hyprwire::SMethod{{
+Abysswire::SMethod{{
 .idx = {},
 .params = {{ {} }},
 .returnsType = "{}",
@@ -370,12 +370,12 @@ Hyprwire::SMethod{{
         HEADER_PROTOCOL += R"#(
     };
 
-    virtual const std::vector<Hyprwire::SMethod>& c2s() {
+    virtual const std::vector<Abysswire::SMethod>& c2s() {
         return m_c2s;
     }
 )#";
 
-        HEADER_PROTOCOL += "\n\tstd::vector<Hyprwire::SMethod>                m_s2c = {";
+        HEADER_PROTOCOL += "\n\tstd::vector<Abysswire::SMethod>                m_s2c = {";
 
         for (const auto& m : object.s2c) {
 
@@ -388,7 +388,7 @@ Hyprwire::SMethod{{
                 argArrayStr = argArrayStr.substr(0, argArrayStr.size() - 2);
 
             HEADER_PROTOCOL += std::format(R"#(
-Hyprwire::SMethod{{
+Abysswire::SMethod{{
 .idx = {},
 .params = {{ {} }},
 .since = {},
@@ -403,7 +403,7 @@ Hyprwire::SMethod{{
         HEADER_PROTOCOL += R"#(
     };
 
-    virtual const std::vector<Hyprwire::SMethod>& s2c() {
+    virtual const std::vector<Abysswire::SMethod>& s2c() {
         return m_s2c;
     }
 
@@ -417,14 +417,14 @@ Hyprwire::SMethod{{
 
     std::string objectVecStr = "";
     for (const auto& o : OBJECT_SPECS) {
-        objectVecStr += std::format("Hyprutils::Memory::makeShared<C{}Spec>(), ", capitalize(o.nameCamel));
+        objectVecStr += std::format("Abyssutils::Memory::makeShared<C{}Spec>(), ", capitalize(o.nameCamel));
     }
 
     objectVecStr = objectVecStr.substr(0, objectVecStr.size() - 2);
 
     HEADER_PROTOCOL +=
         std::format(R"#(
-class C{}ProtocolSpec : public Hyprwire::IProtocolSpec {{
+class C{}ProtocolSpec : public Abysswire::IProtocolSpec {{
   public:
     C{}ProtocolSpec()          = default;
     virtual ~C{}ProtocolSpec() = default;
@@ -437,7 +437,7 @@ class C{}ProtocolSpec : public Hyprwire::IProtocolSpec {{
         return {};
     }}
 
-    virtual std::vector<Hyprutils::Memory::CSharedPointer<Hyprwire::IProtocolObjectSpec>> objects() {{
+    virtual std::vector<Abyssutils::Memory::CSharedPointer<Abysswire::IProtocolObjectSpec>> objects() {{
         return {{ {} }};
     }}
 }};
@@ -460,10 +460,10 @@ static bool generateClientCodeHeader(const pugi::xml_document& doc) {
         HEADER_IMPL += std::format(R"#(
 class CC{}Object {{
   public:
-    CC{}Object(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>&& object);
+    CC{}Object(Abyssutils::Memory::CSharedPointer<Abysswire::IObject>&& object);
     ~CC{}Object();
 
-    Hyprutils::Memory::CSharedPointer<Hyprwire::IObject> getObject() {{
+    Abyssutils::Memory::CSharedPointer<Abysswire::IObject> getObject() {{
         return m_object;
     }}
 
@@ -471,7 +471,7 @@ class CC{}Object {{
                                    capitalize(o.nameCamel), capitalize(o.nameCamel), capitalize(o.nameCamel));
 
         for (const auto& m : o.c2s) {
-            const auto RETURN_TYPE = m.returns.empty() ? "void" : "Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>";
+            const auto RETURN_TYPE = m.returns.empty() ? "void" : "Abyssutils::Memory::CSharedPointer<Abysswire::IObject>";
             HEADER_IMPL += std::format(R"#(
     {} send{}({});
             )#",
@@ -495,20 +495,20 @@ class CC{}Object {{
 
         HEADER_IMPL += R"#( } m_listeners;
         
-    Hyprutils::Memory::CSharedPointer<Hyprwire::IObject> m_object;
+    Abyssutils::Memory::CSharedPointer<Abysswire::IObject> m_object;
 };
 )#";
     }
 
     HEADER_IMPL += std::format(R"#(
-class CC{}Impl : public Hyprwire::IProtocolClientImplementation {{
+class CC{}Impl : public Abysswire::IProtocolClientImplementation {{
   public:
     CC{}Impl(uint32_t version);
     virtual ~CC{}Impl() = default;
 
-    virtual Hyprutils::Memory::CSharedPointer<Hyprwire::IProtocolSpec> protocol();
+    virtual Abyssutils::Memory::CSharedPointer<Abysswire::IProtocolSpec> protocol();
 
-    virtual std::vector<Hyprutils::Memory::CSharedPointer<Hyprwire::SClientObjectImplementation>> implementation();
+    virtual std::vector<Abyssutils::Memory::CSharedPointer<Abysswire::SClientObjectImplementation>> implementation();
 
   private:
     uint32_t m_version = 0;
@@ -525,7 +525,7 @@ static bool generateClientCodeSource(const pugi::xml_document& doc) {
 #include "{}-client.hpp"
 #undef private
 
-using namespace Hyprutils::Memory;
+using namespace Abyssutils::Memory;
 #define SP CSharedPointer
     )#",
                           PROTO_DATA.nameOriginal);
@@ -533,7 +533,7 @@ using namespace Hyprutils::Memory;
     for (const auto& o : OBJECT_SPECS) {
         for (const auto& m : o.s2c) {
             SOURCE += std::format(R"#(
-static void {}_method{}(Hyprwire::IObject* r{}) {{
+static void {}_method{}(Abysswire::IObject* r{}) {{
     auto& fn = rc<{}*>(r->getData())->m_listeners.{};
     if (fn)
         fn({});
@@ -544,7 +544,7 @@ static void {}_method{}(Hyprwire::IObject* r{}) {{
         }
 
         SOURCE += std::format(R"#(
-CC{}Object::CC{}Object(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>&& object) : m_object(std::move(object)) {{
+CC{}Object::CC{}Object(Abyssutils::Memory::CSharedPointer<Abysswire::IObject>&& object) : m_object(std::move(object)) {{
     m_object->setData(this);
             )#",
                               capitalize(o.nameCamel), capitalize(o.nameCamel));
@@ -575,7 +575,7 @@ void CC{}Object::send{}({}) {{
             } else {
                 SOURCE += std::format(R"#(
 
-SP<Hyprwire::IObject> CC{}Object::send{}({}) {{
+SP<Abysswire::IObject> CC{}Object::send{}({}) {{
     auto _seq = m_object->call({}{});
     return m_object->clientSock()->objectForSeq(_seq);
 }}
@@ -602,11 +602,11 @@ CC{}Impl::CC{}Impl(uint32_t ver) : m_version(ver) {{
 
 static auto {}Spec = makeShared<C{}ProtocolSpec>();
 
-SP<Hyprwire::IProtocolSpec> CC{}Impl::protocol() {{
+SP<Abysswire::IProtocolSpec> CC{}Impl::protocol() {{
     return {}Spec;
 }}
 
-std::vector<SP<Hyprwire::SClientObjectImplementation>> CC{}Impl::implementation() {{
+std::vector<SP<Abysswire::SClientObjectImplementation>> CC{}Impl::implementation() {{
     return {{
 )#",
                           capitalize(PROTO_DATA.name), capitalize(PROTO_DATA.name), PROTO_DATA.name, capitalize(PROTO_DATA.name), capitalize(PROTO_DATA.name), PROTO_DATA.name,
@@ -614,7 +614,7 @@ std::vector<SP<Hyprwire::SClientObjectImplementation>> CC{}Impl::implementation(
 
     for (const auto& o : OBJECT_SPECS) {
         SOURCE += std::format(R"#(
-            makeShared<Hyprwire::SClientObjectImplementation>(Hyprwire::SClientObjectImplementation{{
+            makeShared<Abysswire::SClientObjectImplementation>(Abysswire::SClientObjectImplementation{{
                 .objectName = "{}",
                 .version    = m_version,
             }}),
@@ -640,10 +640,10 @@ static bool generateServerCodeHeader(const pugi::xml_document& doc) {
         HEADER_IMPL += std::format(R"#(
 class C{}Object {{
   public:
-    C{}Object(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>&& object);
+    C{}Object(Abyssutils::Memory::CSharedPointer<Abysswire::IObject>&& object);
     ~C{}Object();
 
-    Hyprutils::Memory::CSharedPointer<Hyprwire::IObject> getObject() {{
+    Abyssutils::Memory::CSharedPointer<Abysswire::IObject> getObject() {{
         return m_object;
     }}
 
@@ -685,24 +685,24 @@ class C{}Object {{
 
         HEADER_IMPL += R"#( } m_listeners;
         
-    Hyprutils::Memory::CSharedPointer<Hyprwire::IObject> m_object;
+    Abyssutils::Memory::CSharedPointer<Abysswire::IObject> m_object;
 };
 )#";
     }
 
     HEADER_IMPL += std::format(R"#(
-class C{}Impl : public Hyprwire::IProtocolServerImplementation {{
+class C{}Impl : public Abysswire::IProtocolServerImplementation {{
   public:
-    C{}Impl(uint32_t version, std::function<void(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>)>&& bindFn);
+    C{}Impl(uint32_t version, std::function<void(Abyssutils::Memory::CSharedPointer<Abysswire::IObject>)>&& bindFn);
     virtual ~C{}Impl() = default;
 
-    virtual Hyprutils::Memory::CSharedPointer<Hyprwire::IProtocolSpec> protocol();
+    virtual Abyssutils::Memory::CSharedPointer<Abysswire::IProtocolSpec> protocol();
 
-    virtual std::vector<Hyprutils::Memory::CSharedPointer<Hyprwire::SServerObjectImplementation>> implementation();
+    virtual std::vector<Abyssutils::Memory::CSharedPointer<Abysswire::SServerObjectImplementation>> implementation();
 
   private:
     uint32_t m_version = 0;
-    std::function<void(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>)> m_bindFn;
+    std::function<void(Abyssutils::Memory::CSharedPointer<Abysswire::IObject>)> m_bindFn;
 }};
 )#",
                                capitalize(PROTO_DATA.name), capitalize(PROTO_DATA.name), capitalize(PROTO_DATA.name));
@@ -716,7 +716,7 @@ static bool generateServerCodeSource(const pugi::xml_document& doc) {
 #include "{}-server.hpp"
 #undef private
 
-using namespace Hyprutils::Memory;
+using namespace Abyssutils::Memory;
 #define SP CSharedPointer
     )#",
                           PROTO_DATA.nameOriginal);
@@ -724,7 +724,7 @@ using namespace Hyprutils::Memory;
     for (const auto& o : OBJECT_SPECS) {
         for (const auto& m : o.c2s) {
             SOURCE += std::format(R"#(
-static void {}_method{}(Hyprwire::IObject* r{}) {{
+static void {}_method{}(Abysswire::IObject* r{}) {{
     auto& fn = rc<{}*>(r->getData())->m_listeners.{};
     if (fn)
         fn({});
@@ -735,7 +735,7 @@ static void {}_method{}(Hyprwire::IObject* r{}) {{
         }
 
         SOURCE += std::format(R"#(
-C{}Object::C{}Object(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>&& object) : m_object(std::move(object)) {{
+C{}Object::C{}Object(Abyssutils::Memory::CSharedPointer<Abysswire::IObject>&& object) : m_object(std::move(object)) {{
     m_object->setData(this);
             )#",
                               capitalize(o.nameCamel), capitalize(o.nameCamel));
@@ -775,17 +775,17 @@ void C{}Object::set{}(std::function<void({})>&& fn) {{
     }
 
     SOURCE += std::format(R"#(
-C{}Impl::C{}Impl(uint32_t ver, std::function<void(Hyprutils::Memory::CSharedPointer<Hyprwire::IObject>)>&& bindFn) : m_version(ver), m_bindFn(bindFn) {{
+C{}Impl::C{}Impl(uint32_t ver, std::function<void(Abyssutils::Memory::CSharedPointer<Abysswire::IObject>)>&& bindFn) : m_version(ver), m_bindFn(bindFn) {{
     ;
 }}
 
 static auto {}Spec = makeShared<C{}ProtocolSpec>();
 
-SP<Hyprwire::IProtocolSpec> C{}Impl::protocol() {{
+SP<Abysswire::IProtocolSpec> C{}Impl::protocol() {{
     return {}Spec;
 }}
 
-std::vector<SP<Hyprwire::SServerObjectImplementation>> C{}Impl::implementation() {{
+std::vector<SP<Abysswire::SServerObjectImplementation>> C{}Impl::implementation() {{
     return {{
 )#",
                           capitalize(PROTO_DATA.name), capitalize(PROTO_DATA.name), PROTO_DATA.name, capitalize(PROTO_DATA.name), capitalize(PROTO_DATA.name), PROTO_DATA.name,
@@ -795,16 +795,16 @@ std::vector<SP<Hyprwire::SServerObjectImplementation>> C{}Impl::implementation()
     for (const auto& o : OBJECT_SPECS) {
         if (first) {
             SOURCE += std::format(R"#(
-            makeShared<Hyprwire::SServerObjectImplementation>(Hyprwire::SServerObjectImplementation{{
+            makeShared<Abysswire::SServerObjectImplementation>(Abysswire::SServerObjectImplementation{{
                 .objectName = "{}",
                 .version    = m_version,
-                .onBind = [this] (Hyprutils::Memory::CSharedPointer<Hyprwire::IObject> r) {{ if (m_bindFn) m_bindFn(r); }}
+                .onBind = [this] (Abyssutils::Memory::CSharedPointer<Abysswire::IObject> r) {{ if (m_bindFn) m_bindFn(r); }}
             }}),
 )#",
                                   o.name);
         } else {
             SOURCE += std::format(R"#(
-            makeShared<Hyprwire::SServerObjectImplementation>(Hyprwire::SServerObjectImplementation{{
+            makeShared<Abysswire::SServerObjectImplementation>(Abysswire::SServerObjectImplementation{{
                 .objectName = "{}",
                 .version    = m_version,
             }}),
@@ -872,7 +872,7 @@ int main(int argc, char** argv, char** envp) {
     PROTO_DATA.version      = doc.child("protocol").attribute("version").as_int(1);
 
     const auto COPYRIGHT =
-        std::format("// Generated with hyprwire-scanner {}. Made with vaxry's keyboard and ❤️.\n// {}\n\n/*\n This protocol's authors' copyright notice is:\n\n{}\n*/\n\n",
+        std::format("// Generated with abysswire-scanner {}. Made with vaxry's keyboard and ❤️.\n// {}\n\n/*\n This protocol's authors' copyright notice is:\n\n{}\n*/\n\n",
                     SCANNER_VERSION, PROTO_DATA.nameOriginal, std::string{doc.child("protocol").child("copyright").child_value()});
 
     scanProtocol(doc);

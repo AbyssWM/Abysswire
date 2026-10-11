@@ -1,8 +1,8 @@
 #pragma once
 
-#include <hyprutils/memory/SharedPtr.hpp>
+#include <abyssutils/memory/SharedPtr.hpp>
 
-namespace Hyprwire {
+namespace Abysswire {
     class IProtocolClientImplementation;
     class IProtocolSpec;
     class IObject;
@@ -11,15 +11,15 @@ namespace Hyprwire {
       public:
         virtual ~IClientSocket() = default;
 
-        static Hyprutils::Memory::CSharedPointer<IClientSocket> open(const std::string& path);
+        static Abyssutils::Memory::CSharedPointer<IClientSocket> open(const std::string& path);
 
         // IClientSocket takes ownership of the fd.
-        static Hyprutils::Memory::CSharedPointer<IClientSocket> open(const int fd);
+        static Abyssutils::Memory::CSharedPointer<IClientSocket> open(const int fd);
 
         /*
             Add an implementation to the socket
         */
-        virtual void addImplementation(Hyprutils::Memory::CSharedPointer<IProtocolClientImplementation>&&) = 0;
+        virtual void addImplementation(Abyssutils::Memory::CSharedPointer<IProtocolClientImplementation>&&) = 0;
 
         /*
             Synchronously dispatch pending events. Returns false on failure.
@@ -39,17 +39,17 @@ namespace Hyprwire {
         /*
             Get a protocol spec from the server list. If the spec is supported, will be returned.
         */
-        virtual Hyprutils::Memory::CSharedPointer<IProtocolSpec> getSpec(const std::string& name) = 0;
+        virtual Abyssutils::Memory::CSharedPointer<IProtocolSpec> getSpec(const std::string& name) = 0;
 
         /*
             Bind a protocol object
         */
-        virtual Hyprutils::Memory::CSharedPointer<IObject> bindProtocol(const Hyprutils::Memory::CSharedPointer<IProtocolSpec>& spec, uint32_t version) = 0;
+        virtual Abyssutils::Memory::CSharedPointer<IObject> bindProtocol(const Abyssutils::Memory::CSharedPointer<IProtocolSpec>& spec, uint32_t version) = 0;
 
         /*
             Get an object from an id
         */
-        virtual Hyprutils::Memory::CSharedPointer<IObject> objectForId(uint32_t id) = 0;
+        virtual Abyssutils::Memory::CSharedPointer<IObject> objectForId(uint32_t id) = 0;
 
         /*
             Perform a roundtrip
@@ -64,7 +64,7 @@ namespace Hyprwire {
         /*
             Get an object from a sequence number
         */
-        virtual Hyprutils::Memory::CSharedPointer<IObject> objectForSeq(uint32_t seq) = 0;
+        virtual Abyssutils::Memory::CSharedPointer<IObject> objectForSeq(uint32_t seq) = 0;
 
       protected:
         IClientSocket() = default;

@@ -5,7 +5,7 @@
 #include <array>
 
 TEST(MessageMagic, KnownValuesMapToReadableStrings) {
-    using namespace Hyprwire;
+    using namespace Abysswire;
 
     const std::array<eMessageMagic, 10> known = {
         HW_MESSAGE_MAGIC_END,         HW_MESSAGE_MAGIC_TYPE_UINT,      HW_MESSAGE_MAGIC_TYPE_INT,     HW_MESSAGE_MAGIC_TYPE_F32,
@@ -21,7 +21,7 @@ TEST(MessageMagic, KnownValuesMapToReadableStrings) {
 }
 
 TEST(MessageMagic, UnknownValueReturnsError) {
-    using namespace Hyprwire;
+    using namespace Abysswire;
 
     EXPECT_STREQ(magicToString(static_cast<eMessageMagic>(0xFF)), "ERROR");
 }

@@ -6,9 +6,9 @@
 #include "core/message/messages/RoundtripDone.hpp"
 #include "core/message/messages/RoundtripRequest.hpp"
 
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 TEST(MessagesControl, BindProtocolRoundtripParsesFields) {
     CBindProtocolMessage out("my_proto", 42, 7);

@@ -5,14 +5,14 @@
 #include "core/message/messages/IMessage.hpp"
 #include "core/wireObject/IWireObject.hpp"
 
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
 #include <array>
 #include <cstdint>
 #include <cstring>
 #include <type_traits>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 namespace {
 

@@ -1,8 +1,8 @@
 #include "FFI.hpp"
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
-ffi_type* Hyprwire::FFI::ffiTypeFrom(eMessageMagic magic) {
+ffi_type* Abysswire::FFI::ffiTypeFrom(eMessageMagic magic) {
     switch (magic) {
         case HW_MESSAGE_MAGIC_TYPE_UINT:
         case HW_MESSAGE_MAGIC_TYPE_OBJECT:

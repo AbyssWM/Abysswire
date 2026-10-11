@@ -5,7 +5,7 @@
 
 #include "IMessage.hpp"
 
-namespace Hyprwire {
+namespace Abysswire {
     class CNewObjectMessage : public IMessage {
       public:
         CNewObjectMessage(const std::vector<uint8_t>& data, size_t offset);

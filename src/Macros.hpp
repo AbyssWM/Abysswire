@@ -15,7 +15,7 @@ inline float steadyMillis() {
 
 #define TRACE(expr)                                                                                                                                                                \
     {                                                                                                                                                                              \
-        if (Hyprwire::Env::isTrace()) {                                                                                                                                            \
+        if (Abysswire::Env::isTrace()) {                                                                                                                                            \
             expr;                                                                                                                                                                  \
         }                                                                                                                                                                          \
     }
@@ -32,7 +32,7 @@ inline float steadyMillis() {
 
 #define ASSERT(expr) RASSERT(expr, "?")
 
-#ifndef HYPRWIRE_DEBUG
+#ifndef ABYSSWIRE_DEBUG
 
 #define UNREACHABLE() std::unreachable();
 

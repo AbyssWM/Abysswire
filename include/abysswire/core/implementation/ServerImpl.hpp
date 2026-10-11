@@ -1,26 +1,26 @@
 #pragma once
 
-#include <hyprutils/memory/SharedPtr.hpp>
+#include <abyssutils/memory/SharedPtr.hpp>
 #include <vector>
 #include <cstdint>
 #include <functional>
 
-namespace Hyprwire {
+namespace Abysswire {
     class IProtocolSpec;
     class IObject;
 
     struct SServerObjectImplementation {
         std::string                                                     objectName = "";
         uint32_t                                                        version    = 0;
-        std::function<void(Hyprutils::Memory::CSharedPointer<IObject>)> onBind;
+        std::function<void(Abyssutils::Memory::CSharedPointer<IObject>)> onBind;
     };
 
     class IProtocolServerImplementation {
       public:
         virtual ~IProtocolServerImplementation();
 
-        virtual Hyprutils::Memory::CSharedPointer<IProtocolSpec>                            protocol()       = 0;
-        virtual std::vector<Hyprutils::Memory::CSharedPointer<SServerObjectImplementation>> implementation() = 0;
+        virtual Abyssutils::Memory::CSharedPointer<IProtocolSpec>                            protocol()       = 0;
+        virtual std::vector<Abyssutils::Memory::CSharedPointer<SServerObjectImplementation>> implementation() = 0;
 
       protected:
         IProtocolServerImplementation() = default;

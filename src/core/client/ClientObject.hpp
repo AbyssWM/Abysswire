@@ -1,13 +1,13 @@
 #pragma once
 
-#include <hyprwire/core/implementation/Object.hpp>
-#include <hyprwire/core/implementation/Types.hpp>
+#include <abysswire/core/implementation/Object.hpp>
+#include <abysswire/core/implementation/Types.hpp>
 
 #include "ClientSocket.hpp"
 #include "../../helpers/Memory.hpp"
 #include "../wireObject/IWireObject.hpp"
 
-namespace Hyprwire {
+namespace Abysswire {
     class CClientSocket;
 
     class CClientObject : public IWireObject {
@@ -19,9 +19,9 @@ namespace Hyprwire {
         virtual const std::vector<SMethod>&                      methodsIn();
         virtual void                                             errd();
         virtual void                                             sendMessage(const IMessage&);
-        virtual Hyprutils::Memory::CSharedPointer<IServerClient> client();
-        virtual Hyprutils::Memory::CSharedPointer<IObject>       self();
-        virtual Hyprutils::Memory::CSharedPointer<IClientSocket> clientSock();
+        virtual Abyssutils::Memory::CSharedPointer<IServerClient> client();
+        virtual Abyssutils::Memory::CSharedPointer<IObject>       self();
+        virtual Abyssutils::Memory::CSharedPointer<IClientSocket> clientSock();
         virtual bool                                             server();
 
         WP<CClientSocket>                                        m_client;

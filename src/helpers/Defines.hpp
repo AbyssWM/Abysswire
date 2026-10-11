@@ -2,6 +2,6 @@
 
 #include <cstdint>
 
-namespace Hyprwire {
-    constexpr const uint32_t HYPRWIRE_PROTOCOL_VER = 1;
+namespace Abysswire {
+    constexpr const uint32_t ABYSSWIRE_PROTOCOL_VER = 1;
 }

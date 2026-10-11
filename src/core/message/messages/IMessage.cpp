@@ -6,9 +6,9 @@
 #include <format>
 #include <string_view>
 
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 static std::pair<std::string, size_t> formatPrimitiveType(const std::span<const uint8_t>& s, eMessageMagic type) {
     switch (type) {

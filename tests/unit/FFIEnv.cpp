@@ -4,11 +4,11 @@
 #include "helpers/FFI.hpp"
 
 #include <ffi.h>
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
 #include <cstdlib>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 TEST(FFI, MapsKnownMagicTypesToExpectedFfiTypes) {
     EXPECT_EQ(FFI::ffiTypeFrom(HW_MESSAGE_MAGIC_TYPE_UINT), &ffi_type_uint32);

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <hyprutils/memory/SharedPtr.hpp>
+#include <abyssutils/memory/SharedPtr.hpp>
 #include <vector>
 #include <cstdint>
 
-namespace Hyprwire {
+namespace Abysswire {
 
     struct SMethod {
         uint32_t             idx = 0;

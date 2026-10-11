@@ -14,10 +14,10 @@
 #include "ClientObject.hpp"
 #include "ServerSpec.hpp"
 
-#include <hyprwire/core/implementation/Object.hpp>
-#include <hyprwire/core/implementation/Types.hpp>
-#include <hyprwire/core/implementation/Spec.hpp>
-#include <hyprwire/core/implementation/ClientImpl.hpp>
+#include <abysswire/core/implementation/Object.hpp>
+#include <abysswire/core/implementation/Types.hpp>
+#include <abysswire/core/implementation/Spec.hpp>
+#include <abysswire/core/implementation/ClientImpl.hpp>
 
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -25,11 +25,11 @@
 #include <cstring>
 
 #include <filesystem>
-#include <hyprutils/utils/ScopeGuard.hpp>
+#include <abyssutils/utils/ScopeGuard.hpp>
 
-using namespace Hyprwire;
-using namespace Hyprutils::OS;
-using namespace Hyprutils::Utils;
+using namespace Abysswire;
+using namespace Abyssutils::OS;
+using namespace Abyssutils::Utils;
 
 namespace {
     std::chrono::milliseconds g_handshakeMax = std::chrono::milliseconds(5000);

@@ -2,14 +2,14 @@
 
 #include <vector>
 #include <cstdint>
-#include <hyprutils/os/FileDescriptor.hpp>
+#include <abyssutils/os/FileDescriptor.hpp>
 
-namespace Hyprwire {
+namespace Abysswire {
     struct SSocketRawParsedMessage {
         std::vector<uint8_t> data;
         std::vector<int>     fds;
         bool                 bad = false;
     };
 
-    SSocketRawParsedMessage parseFromFd(const Hyprutils::OS::CFileDescriptor& fd);
+    SSocketRawParsedMessage parseFromFd(const Abyssutils::OS::CFileDescriptor& fd);
 };

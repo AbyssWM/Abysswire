@@ -9,7 +9,7 @@
 #include "core/message/messages/RoundtripDone.hpp"
 #include "core/message/messages/RoundtripRequest.hpp"
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 TEST(IMessageParseData, HelloContainsTypeAndPayloadString) {
     CHelloMessage msg;

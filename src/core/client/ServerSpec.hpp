@@ -1,8 +1,8 @@
 #pragma once
 
-#include <hyprwire/core/implementation/Spec.hpp>
+#include <abysswire/core/implementation/Spec.hpp>
 
-namespace Hyprwire {
+namespace Abysswire {
     class CServerSpec : public IProtocolSpec {
       public:
         CServerSpec(const std::string& name, uint32_t ver) : m_name(name), m_version(ver) {
@@ -18,7 +18,7 @@ namespace Hyprwire {
             return m_version;
         }
 
-        virtual std::vector<Hyprutils::Memory::CSharedPointer<IProtocolObjectSpec>> objects() {
+        virtual std::vector<Abyssutils::Memory::CSharedPointer<IProtocolObjectSpec>> objects() {
             return {};
         }
 

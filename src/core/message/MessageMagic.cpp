@@ -1,6 +1,6 @@
 #include "MessageMagic.hpp"
 
-const char* Hyprwire::magicToString(eMessageMagic magic) {
+const char* Abysswire::magicToString(eMessageMagic magic) {
     switch (magic) {
         case HW_MESSAGE_MAGIC_END: return "END";
         case HW_MESSAGE_MAGIC_TYPE_UINT: return "UINT";

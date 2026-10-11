@@ -7,7 +7,7 @@
 
 #include "../MessageType.hpp"
 
-namespace Hyprwire {
+namespace Abysswire {
     class IMessage {
       public:
         virtual ~IMessage() = default;

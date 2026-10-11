@@ -9,19 +9,19 @@
 #include "../message/MessageParser.hpp"
 #include "../message/MessageMagic.hpp"
 #include "../message/messages/GenericProtocolMessage.hpp"
-#include <hyprwire/core/types/MessageMagic.hpp>
-#include <hyprutils/utils/ScopeGuard.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
+#include <abyssutils/utils/ScopeGuard.hpp>
 
 #include <cstdarg>
 #include <cstring>
 #include <string_view>
 #include <ffi.h>
 
-using namespace Hyprwire;
-using namespace Hyprutils::Utils;
+using namespace Abysswire;
+using namespace Abyssutils::Utils;
 
 namespace {
-    void destroyIfNeeded(Hyprwire::IWireObject* obj, const Hyprwire::SMethod& method) {
+    void destroyIfNeeded(Abysswire::IWireObject* obj, const Abysswire::SMethod& method) {
         if (!method.isDestructor)
             return;
 
@@ -32,13 +32,13 @@ namespace {
             return;
 
         if (obj->server()) {
-            auto serverObj = reinterpret_cast<Hyprwire::CServerObject*>(obj);
+            auto serverObj = reinterpret_cast<Abysswire::CServerObject*>(obj);
             if (serverObj->m_client)
                 serverObj->m_client->destroyObject(id);
             return;
         }
 
-        auto clientObj = reinterpret_cast<Hyprwire::CClientObject*>(obj);
+        auto clientObj = reinterpret_cast<Abysswire::CClientObject*>(obj);
         if (clientObj->m_client)
             clientObj->m_client->destroyObject(id);
     }

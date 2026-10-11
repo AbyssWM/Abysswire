@@ -5,7 +5,7 @@
 
 #include "IMessage.hpp"
 
-namespace Hyprwire {
+namespace Abysswire {
     class CHandshakeProtocolsMessage : public IMessage {
       public:
         CHandshakeProtocolsMessage(const std::vector<uint8_t>& data, size_t offset);

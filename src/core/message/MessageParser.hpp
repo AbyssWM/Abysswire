@@ -6,7 +6,7 @@
 #include "../../helpers/Memory.hpp"
 #include "../socket/SocketHelpers.hpp"
 
-namespace Hyprwire {
+namespace Abysswire {
     class CServerClient;
     class CClientSocket;
     class CGenericProtocolMessage;

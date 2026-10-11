@@ -6,7 +6,7 @@
 #include "IMessage.hpp"
 #include "../../../helpers/Memory.hpp"
 
-namespace Hyprwire {
+namespace Abysswire {
     class IWireObject;
 
     class CRoundtripDoneMessage : public IMessage {

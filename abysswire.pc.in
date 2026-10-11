@@ -2,9 +2,9 @@ prefix=@PREFIX@
 includedir=@INCLUDE@
 libdir=@LIBDIR@
 
-Name: hyprwire
-URL: https://github.com/hyprwm/hyprwire
+Name: abysswire
+URL: https://github.com/AbyssWM/abysswire
 Description: A fast and consistent wire protocol for IPC 
-Version: @HYPRWIRE_VERSION@
+Version: @ABYSSWIRE_VERSION@
 Cflags: -I${includedir}
-Libs: -L${libdir} -lhyprwire
+Libs: -L${libdir} -labysswire

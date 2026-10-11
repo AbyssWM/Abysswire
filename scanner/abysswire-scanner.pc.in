@@ -1,0 +1,6 @@
+abysswire_scanner=@PREFIX@/bin/abysswire-scanner
+
+Name: Abysswire Scanner
+URL: https://github.com/AbyssWM/abysswire
+Description: A protocol code generator for abysswire
+Version: @VERSION@

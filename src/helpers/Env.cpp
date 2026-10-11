@@ -3,15 +3,15 @@
 #include <cstdlib>
 #include <string_view>
 
-using namespace Hyprwire;
-using namespace Hyprwire::Env;
+using namespace Abysswire;
+using namespace Abysswire::Env;
 
 namespace {
     bool g_traceCached = false;
     bool g_trace       = false;
 }
 
-bool Hyprwire::Env::envEnabled(const std::string& env) {
+bool Abysswire::Env::envEnabled(const std::string& env) {
     auto ret = getenv(env.c_str());
     if (!ret)
         return false;
@@ -21,7 +21,7 @@ bool Hyprwire::Env::envEnabled(const std::string& env) {
     return !sv.empty() && sv != "0";
 }
 
-bool Hyprwire::Env::isTrace() {
+bool Abysswire::Env::isTrace() {
     if (!g_traceCached) {
         g_trace       = envEnabled("HW_TRACE");
         g_traceCached = true;
@@ -30,7 +30,7 @@ bool Hyprwire::Env::isTrace() {
     return g_trace;
 }
 
-void Hyprwire::Env::resetTraceCache() {
+void Abysswire::Env::resetTraceCache() {
     g_traceCached = false;
     g_trace       = false;
 }

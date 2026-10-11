@@ -1,13 +1,13 @@
 #pragma once
 
-#include <hyprwire/core/implementation/Object.hpp>
-#include <hyprwire/core/implementation/Types.hpp>
+#include <abysswire/core/implementation/Object.hpp>
+#include <abysswire/core/implementation/Types.hpp>
 
 #include "ServerClient.hpp"
 #include "../../helpers/Memory.hpp"
 #include "../wireObject/IWireObject.hpp"
 
-namespace Hyprwire {
+namespace Abysswire {
     class CServerClient;
 
     class CServerObject : public IWireObject {
@@ -15,14 +15,14 @@ namespace Hyprwire {
         CServerObject(SP<CServerClient> client);
         virtual ~CServerObject();
 
-        virtual Hyprutils::Memory::CSharedPointer<IServerClient> client();
+        virtual Abyssutils::Memory::CSharedPointer<IServerClient> client();
 
         virtual const std::vector<SMethod>&                      methodsOut();
         virtual const std::vector<SMethod>&                      methodsIn();
         virtual void                                             errd();
         virtual void                                             sendMessage(const IMessage&);
-        virtual Hyprutils::Memory::CSharedPointer<IObject>       self();
-        virtual Hyprutils::Memory::CSharedPointer<IServerSocket> serverSock();
+        virtual Abyssutils::Memory::CSharedPointer<IObject>       self();
+        virtual Abyssutils::Memory::CSharedPointer<IServerSocket> serverSock();
         virtual bool                                             server();
         virtual void                                             error(uint32_t id, const std::string_view& message);
 

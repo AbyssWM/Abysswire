@@ -1,12 +1,12 @@
 #pragma once
 
-#include <hyprutils/memory/SharedPtr.hpp>
+#include <abyssutils/memory/SharedPtr.hpp>
 #include <vector>
 #include <cstdint>
 
 #include "Types.hpp"
 
-namespace Hyprwire {
+namespace Abysswire {
     class IProtocolSpec {
       public:
         virtual ~IProtocolSpec();
@@ -17,7 +17,7 @@ namespace Hyprwire {
         /*
             First object is the manager which will be created upon bind.
         */
-        virtual std::vector<Hyprutils::Memory::CSharedPointer<IProtocolObjectSpec>> objects() = 0;
+        virtual std::vector<Abyssutils::Memory::CSharedPointer<IProtocolObjectSpec>> objects() = 0;
 
       protected:
         IProtocolSpec() = default;

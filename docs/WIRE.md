@@ -1,6 +1,6 @@
 # Wire Docs
 
-The hyprwire format is split into _messages_. Each message is always in the form of:
+The abysswire format is split into _messages_. Each message is always in the form of:
 ```
 [code : 1 byte][content : ...][end : 1 byte]
 ```
@@ -19,7 +19,7 @@ the end, the message should be read until an `END` is received in place where th
 
 ### Wire content types
 
-Content is split into parameters, which are essentially variables. These are defined in [include/hyprwire/core/types/MessageMagic.hpp](../include/hyprwire/core/types/MessageMagic.hpp).
+Content is split into parameters, which are essentially variables. These are defined in [include/abysswire/core/types/MessageMagic.hpp](../include/abysswire/core/types/MessageMagic.hpp).
 
 ### Example wire message
 
@@ -106,7 +106,7 @@ Some `GENERIC_PROTOCOL_MESSAGE`s might create objects. In the protocol XMLs, tha
 with a `NEW_OBJECT` event from the server. After the seq, regular message arguments should be passed.
 
 Object IDs have no requirements. The server may choose them however it wants, as long as two objects that
-are alive do not share an ID. The hyprwire reference server does a simple increment.
+are alive do not share an ID. The abysswire reference server does a simple increment.
 
 ### Destroying objects
 

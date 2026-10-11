@@ -7,14 +7,14 @@
 #include "../message/MessageParser.hpp"
 #include "../message/messages/GenericProtocolMessage.hpp"
 #include "../message/messages/FatalProtocolError.hpp"
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
 #include <cstdarg>
 #include <cstring>
 #include <string_view>
 #include <ffi.h>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 CServerObject::CServerObject(SP<CServerClient> client) : m_client(client) {
     ;

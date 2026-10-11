@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <hyprwire/hyprwire.hpp>
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/abysswire.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
 #include <atomic>
 #include <chrono>
@@ -16,8 +16,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-using namespace Hyprwire;
-using namespace Hyprutils::Memory;
+using namespace Abysswire;
+using namespace Abyssutils::Memory;
 
 namespace {
 

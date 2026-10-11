@@ -5,7 +5,7 @@
 #include <array>
 
 TEST(VarInt, EncodeThenParseRoundtripAtBoundaries) {
-    Hyprwire::CMessageParser    parser;
+    Abysswire::CMessageParser    parser;
 
     const std::array<size_t, 9> values = {
         0, 1, 127, 128, 16383, 16384, 2097151, 2097152, 268435455,
@@ -24,7 +24,7 @@ TEST(VarInt, EncodeThenParseRoundtripAtBoundaries) {
 }
 
 TEST(VarInt, ParseFromVectorWithOffset) {
-    Hyprwire::CMessageParser parser;
+    Abysswire::CMessageParser parser;
 
     const auto               encoded = parser.encodeVarInt(420);
 
@@ -38,7 +38,7 @@ TEST(VarInt, ParseFromVectorWithOffset) {
 }
 
 TEST(VarInt, ParseOutOfBoundsOffsetReturnsZeroPair) {
-    Hyprwire::CMessageParser   parser;
+    Abysswire::CMessageParser   parser;
 
     const std::vector<uint8_t> data     = {1, 2, 3};
     const auto                 expected = std::pair<size_t, size_t>{0, 0};

@@ -6,9 +6,9 @@
 #include "core/message/messages/HandshakeProtocols.hpp"
 #include "core/message/messages/Hello.hpp"
 
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 TEST(MessagesHelloHandshake, HelloCtorBuildsExpectedWireBytes) {
     CHelloMessage              msg;

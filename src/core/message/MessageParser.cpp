@@ -19,11 +19,11 @@
 #include "messages/RoundtripDone.hpp"
 #include "messages/RoundtripRequest.hpp"
 
-#include <hyprwire/core/implementation/ServerImpl.hpp>
-#include <hyprwire/core/implementation/Spec.hpp>
+#include <abysswire/core/implementation/ServerImpl.hpp>
+#include <abysswire/core/implementation/Spec.hpp>
 #include <algorithm>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 eMessageParsingResult CMessageParser::handleMessage(SSocketRawParsedMessage& data, SP<CServerClient> client) {
     size_t needle = 0;
@@ -72,7 +72,7 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
             }
             TRACE(Debug::log(TRACE, "[{} @ {:.3f}] <- {}", client->m_fd.get(), steadyMillis(), msg.parseData()));
             client->dispatchFirstPoll();
-            client->sendMessage(CHandshakeBeginMessage(std::vector<uint32_t>{HYPRWIRE_PROTOCOL_VER}));
+            client->sendMessage(CHandshakeBeginMessage(std::vector<uint32_t>{ABYSSWIRE_PROTOCOL_VER}));
             return msg.m_len;
         }
         case HW_MESSAGE_TYPE_HANDSHAKE_BEGIN: {
@@ -183,7 +183,7 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
                 return 0;
             }
 
-            if (!std::ranges::contains(msg.m_versionsSupported, HYPRWIRE_PROTOCOL_VER)) {
+            if (!std::ranges::contains(msg.m_versionsSupported, ABYSSWIRE_PROTOCOL_VER)) {
                 Debug::log(ERR, "server at fd {} core protocol error: version negotiation failed", client->m_fd.get());
                 return 0;
             }
@@ -191,7 +191,7 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
             TRACE(Debug::log(TRACE, "[{} @ {:.3f}] <- {}", client->m_fd.get(), steadyMillis(), msg.parseData()));
 
             // version supported: let's select it
-            client->sendMessage(CHandshakeAckMessage(HYPRWIRE_PROTOCOL_VER));
+            client->sendMessage(CHandshakeAckMessage(ABYSSWIRE_PROTOCOL_VER));
 
             return msg.m_len;
         }

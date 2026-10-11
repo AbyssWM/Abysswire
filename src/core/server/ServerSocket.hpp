@@ -1,7 +1,7 @@
 #pragma once
 
-#include <hyprwire/core/ServerSocket.hpp>
-#include <hyprutils/os/FileDescriptor.hpp>
+#include <abysswire/core/ServerSocket.hpp>
+#include <abyssutils/os/FileDescriptor.hpp>
 #include "../../helpers/Memory.hpp"
 
 #include <condition_variable>
@@ -10,7 +10,7 @@
 #include <mutex>
 #include <sys/poll.h>
 
-namespace Hyprwire {
+namespace Abysswire {
     class CServerClient;
 
     class CServerSocket : public IServerSocket {
@@ -35,15 +35,15 @@ namespace Hyprwire {
         void                                           dispatchClient(SP<CServerClient> client);
         void                                           clearEventFd();
         void                                           clearWakeupFd();
-        void                                           clearFd(const Hyprutils::OS::CFileDescriptor& fd);
+        void                                           clearFd(const Abyssutils::OS::CFileDescriptor& fd);
         size_t                                         internalFds();
 
         std::vector<SP<IProtocolServerImplementation>> m_impls;
 
-        Hyprutils::OS::CFileDescriptor                 m_fd;
-        Hyprutils::OS::CFileDescriptor                 m_exportFd, m_exportWriteFd;
-        Hyprutils::OS::CFileDescriptor                 m_exitFd, m_exitWriteFd;
-        Hyprutils::OS::CFileDescriptor                 m_wakeupFd, m_wakeupWriteFd;
+        Abyssutils::OS::CFileDescriptor                 m_fd;
+        Abyssutils::OS::CFileDescriptor                 m_exportFd, m_exportWriteFd;
+        Abyssutils::OS::CFileDescriptor                 m_exitFd, m_exitWriteFd;
+        Abyssutils::OS::CFileDescriptor                 m_wakeupFd, m_wakeupWriteFd;
 
         std::vector<pollfd>                            m_pollfds;
         std::vector<SP<CServerClient>>                 m_clients;

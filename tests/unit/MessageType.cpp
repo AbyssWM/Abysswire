@@ -5,7 +5,7 @@
 #include <array>
 
 TEST(MessageType, KnownValuesMapToStrings) {
-    using namespace Hyprwire;
+    using namespace Abysswire;
 
     const std::array<eMessageType, 10> known = {
         HW_MESSAGE_TYPE_INVALID,       HW_MESSAGE_TYPE_SUP,        HW_MESSAGE_TYPE_HANDSHAKE_BEGIN,      HW_MESSAGE_TYPE_HANDSHAKE_ACK,     HW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS,
@@ -22,7 +22,7 @@ TEST(MessageType, KnownValuesMapToStrings) {
 }
 
 TEST(MessageType, UnknownValueReturnsError) {
-    using namespace Hyprwire;
+    using namespace Abysswire;
 
     EXPECT_STREQ(messageTypeToStr(static_cast<eMessageType>(0xFF)), "ERROR");
 }

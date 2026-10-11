@@ -1,4 +1,4 @@
-#include <hyprwire/hyprwire.hpp>
+#include <abysswire/abysswire.hpp>
 #include <print>
 #include <sys/poll.h>
 #include <sys/signal.h>
@@ -7,7 +7,7 @@
 #include "generated/test_protocol_v1-server.hpp"
 #include "generated/test_protocol_v1-client.hpp"
 
-using namespace Hyprutils::Memory;
+using namespace Abyssutils::Memory;
 
 #define SP CSharedPointer
 #define WP CWeakPointer
@@ -22,7 +22,7 @@ static void              sigHandler(int sig) {
 
 static SP<CMyManagerV1Object>             manager;
 static std::vector<SP<CMyObjectV1Object>> objects;
-static SP<Hyprwire::IServerSocket>        serverSock;
+static SP<Abysswire::IServerSocket>        serverSock;
 static SP<CCTestProtocolV1Impl>           impl = makeShared<CCTestProtocolV1Impl>(TEST_PROTOCOL_VERSION);
 
 static void                               makeObject(uint32_t seq) {
@@ -45,7 +45,7 @@ static void                               makeObject(uint32_t seq) {
     objects.emplace_back(std::move(object));
 }
 
-static SP<CTestProtocolV1Impl> spec = makeShared<CTestProtocolV1Impl>(TEST_PROTOCOL_VERSION, [](SP<Hyprwire::IObject> obj) {
+static SP<CTestProtocolV1Impl> spec = makeShared<CTestProtocolV1Impl>(TEST_PROTOCOL_VERSION, [](SP<Abysswire::IObject> obj) {
     std::println("Object bound XD");
     manager = makeShared<CMyManagerV1Object>(std::move(obj));
 
@@ -83,7 +83,7 @@ static SP<CTestProtocolV1Impl> spec = makeShared<CTestProtocolV1Impl>(TEST_PROTO
 });
 
 static void                    server(int clientFd) {
-    serverSock = Hyprwire::IServerSocket::open();
+    serverSock = Abysswire::IServerSocket::open();
     pollfd pfd = {.fd = clientFd, .events = POLLIN, .revents = 0};
 
     serverSock->addImplementation(spec);
@@ -125,7 +125,7 @@ static void                    server(int clientFd) {
 }
 
 static void client(int serverFd) {
-    auto sock = Hyprwire::IClientSocket::open(serverFd);
+    auto sock = Abysswire::IClientSocket::open(serverFd);
 
     if (!sock->waitForHandshake()) {
         std::println("err: handshake failed");

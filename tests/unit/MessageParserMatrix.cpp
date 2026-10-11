@@ -11,9 +11,9 @@
 #include "core/message/messages/Hello.hpp"
 #include "core/server/ServerClient.hpp"
 
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 namespace {
     SP<CClientSocket> makeClientSocket() {

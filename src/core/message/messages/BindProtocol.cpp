@@ -6,9 +6,9 @@
 #include <cstring>
 #include <stdexcept>
 #include <string_view>
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 CBindProtocolMessage::CBindProtocolMessage(const std::vector<uint8_t>& data, size_t offset) {
     m_type = HW_MESSAGE_TYPE_BIND_PROTOCOL;

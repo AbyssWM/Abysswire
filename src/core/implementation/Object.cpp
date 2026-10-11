@@ -1,13 +1,13 @@
 #include <string_view>
-#include <hyprwire/core/implementation/ClientImpl.hpp>
-#include <hyprwire/core/implementation/Spec.hpp>
-#include <hyprwire/core/implementation/ServerImpl.hpp>
-#include <hyprwire/core/implementation/Object.hpp>
-#include <hyprwire/core/ServerSocket.hpp>
+#include <abysswire/core/implementation/ClientImpl.hpp>
+#include <abysswire/core/implementation/Spec.hpp>
+#include <abysswire/core/implementation/ServerImpl.hpp>
+#include <abysswire/core/implementation/Object.hpp>
+#include <abysswire/core/ServerSocket.hpp>
 
 #include "../../helpers/Memory.hpp"
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 IObject::~IObject() {
     if (m_onDestroy)

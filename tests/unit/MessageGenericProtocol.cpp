@@ -3,11 +3,11 @@
 #include "core/message/MessageParser.hpp"
 #include "core/message/messages/GenericProtocolMessage.hpp"
 
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
 #include <cstring>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 static void appendU32(std::vector<uint8_t>& data, uint32_t value) {
     data.resize(data.size() + 4);

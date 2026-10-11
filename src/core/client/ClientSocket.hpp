@@ -1,7 +1,7 @@
 #pragma once
 
-#include <hyprwire/core/ClientSocket.hpp>
-#include <hyprutils/os/FileDescriptor.hpp>
+#include <abysswire/core/ClientSocket.hpp>
+#include <abyssutils/os/FileDescriptor.hpp>
 #include "../../helpers/Memory.hpp"
 #include "../socket/SocketHelpers.hpp"
 #include "../wireObject/IWireObject.hpp"
@@ -10,7 +10,7 @@
 #include <sys/poll.h>
 #include <chrono>
 
-namespace Hyprwire {
+namespace Abysswire {
     class IMessage;
     class CClientObject;
     class CGenericProtocolMessage;
@@ -49,7 +49,7 @@ namespace Hyprwire {
 
         void                                           disconnectOnError();
 
-        Hyprutils::OS::CFileDescriptor                 m_fd;
+        Abyssutils::OS::CFileDescriptor                 m_fd;
         std::vector<SP<IProtocolClientImplementation>> m_impls;
         std::vector<SP<IProtocolSpec>>                 m_serverSpecs;
         std::vector<pollfd>                            m_pollfds;

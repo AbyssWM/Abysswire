@@ -11,9 +11,9 @@
 #include <span>
 #include <mutex>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
-SSocketRawParsedMessage Hyprwire::parseFromFd(const Hyprutils::OS::CFileDescriptor& fd) {
+SSocketRawParsedMessage Abysswire::parseFromFd(const Abyssutils::OS::CFileDescriptor& fd) {
     SSocketRawParsedMessage     message;
     constexpr size_t            BUFFER_SIZE         = 8192;
     constexpr size_t            MAX_FDS_PER_MSG     = 255;

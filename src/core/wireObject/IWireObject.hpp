@@ -1,14 +1,14 @@
 #pragma once
 
-#include <hyprwire/core/implementation/Object.hpp>
-#include <hyprwire/core/implementation/Types.hpp>
+#include <abysswire/core/implementation/Object.hpp>
+#include <abysswire/core/implementation/Types.hpp>
 #include <span>
 #include <vector>
 #include <cstdint>
 
 #include "../../helpers/Memory.hpp"
 
-namespace Hyprwire {
+namespace Abysswire {
     class IMessage;
 
     class IWireObject : public IObject {

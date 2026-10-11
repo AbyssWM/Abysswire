@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace Hyprwire {
+namespace Abysswire {
     enum eMessageMagic : uint8_t {
         /*
             Signifies an end of a message

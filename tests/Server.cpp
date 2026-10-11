@@ -1,19 +1,19 @@
-#include <hyprwire/hyprwire.hpp>
+#include <abysswire/abysswire.hpp>
 #include <print>
 #include <sys/signal.h>
 #include <unistd.h>
 
 #include "generated/test_protocol_v1-server.hpp"
 
-using namespace Hyprutils::Memory;
+using namespace Abyssutils::Memory;
 
 #define SP CSharedPointer
 #define WP CWeakPointer
 
 static SP<CMyManagerV1Object>      manager;
 static SP<CMyObjectV1Object>       object;
-static SP<Hyprwire::IServerSocket> sock;
-static SP<CTestProtocolV1Impl>     spec  = makeShared<CTestProtocolV1Impl>(1, [](SP<Hyprwire::IObject> obj) {
+static SP<Abysswire::IServerSocket> sock;
+static SP<CTestProtocolV1Impl>     spec  = makeShared<CTestProtocolV1Impl>(1, [](SP<Abysswire::IObject> obj) {
     std::println("Object bound XD");
     manager = makeShared<CMyManagerV1Object>(std::move(obj));
 
@@ -77,7 +77,7 @@ static void                        sigHandler(int sig) {
 
 int main(int argc, char** argv, char** envp) {
     const auto XDG_RUNTIME_DIR = getenv("XDG_RUNTIME_DIR");
-    sock                       = Hyprwire::IServerSocket::open(XDG_RUNTIME_DIR + std::string{"/test-hw.sock"});
+    sock                       = Abysswire::IServerSocket::open(XDG_RUNTIME_DIR + std::string{"/test-hw.sock"});
 
     sock->addImplementation(spec);
 

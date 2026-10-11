@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace Hyprwire {
+namespace Abysswire {
     enum eMessageType : uint8_t {
         HW_MESSAGE_TYPE_INVALID = 0,
 

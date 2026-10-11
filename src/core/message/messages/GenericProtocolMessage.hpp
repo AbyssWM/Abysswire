@@ -5,7 +5,7 @@
 
 #include "IMessage.hpp"
 
-namespace Hyprwire {
+namespace Abysswire {
     class CGenericProtocolMessage : public IMessage {
       public:
         CGenericProtocolMessage(const std::vector<uint8_t>& data, std::vector<int>& fds, size_t offset);

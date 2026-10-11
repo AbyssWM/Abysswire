@@ -5,7 +5,7 @@
 #include "core/socket/SocketHelpers.hpp"
 #include "helpers/Syscalls.hpp"
 
-#include <hyprwire/hyprwire.hpp>
+#include <abysswire/abysswire.hpp>
 
 #include <array>
 #include <cerrno>
@@ -15,7 +15,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 namespace {
     class CScopedSyscallHooks {
@@ -141,7 +141,7 @@ TEST(SyscallSeams, ParseFromFdReturnsBadWhenRecvmsgFails) {
     int                 fds[2] = {-1, -1};
     ASSERT_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, fds), 0);
 
-    Hyprutils::OS::CFileDescriptor fd{fds[0]};
+    Abyssutils::OS::CFileDescriptor fd{fds[0]};
     close(fds[1]);
 
     const auto parsed = parseFromFd(fd);
@@ -158,7 +158,7 @@ TEST(SyscallSeams, ParseFromFdReturnsBadForInvalidControlMessage) {
     int                 fds[2] = {-1, -1};
     ASSERT_EQ(socketpair(AF_UNIX, SOCK_STREAM, 0, fds), 0);
 
-    Hyprutils::OS::CFileDescriptor fd{fds[0]};
+    Abyssutils::OS::CFileDescriptor fd{fds[0]};
     close(fds[1]);
 
     const auto parsed = parseFromFd(fd);

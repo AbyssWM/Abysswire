@@ -7,9 +7,9 @@
 #include <cstring>
 #include <stdexcept>
 #include <string_view>
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 CFatalErrorMessage::CFatalErrorMessage(const std::vector<uint8_t>& data, size_t offset) {
     m_type = HW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR;

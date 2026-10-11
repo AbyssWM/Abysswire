@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include <hyprwire/hyprwire.hpp>
+#include <abysswire/abysswire.hpp>
 
 #include <atomic>
 #include <chrono>
@@ -16,12 +16,12 @@
 #include <sys/un.h>
 #include <unistd.h>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 namespace {
 
     std::string makeSocketPath(const std::string& stem) {
-        auto dir = std::filesystem::temp_directory_path() / std::format("hyprwire-tests-{}-{}", stem, getpid());
+        auto dir = std::filesystem::temp_directory_path() / std::format("abysswire-tests-{}-{}", stem, getpid());
         std::filesystem::create_directories(dir);
         return (dir / "wire.sock").string();
     }
@@ -56,7 +56,7 @@ namespace {
             return m_server->extractLoopFD();
         }
 
-        Hyprutils::Memory::CSharedPointer<IClientSocket> openClient() {
+        Abyssutils::Memory::CSharedPointer<IClientSocket> openClient() {
             return IClientSocket::open(m_path);
         }
 
@@ -64,7 +64,7 @@ namespace {
         std::string                                      m_path;
         std::atomic<bool>                                m_stop = false;
         std::thread                                      m_pumpThread;
-        Hyprutils::Memory::CSharedPointer<IServerSocket> m_server;
+        Abyssutils::Memory::CSharedPointer<IServerSocket> m_server;
     };
 
 } // namespace

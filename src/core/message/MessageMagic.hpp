@@ -1,7 +1,7 @@
 #pragma once
 
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
-namespace Hyprwire {
+namespace Abysswire {
     const char* magicToString(eMessageMagic magic);
 };

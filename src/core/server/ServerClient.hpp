@@ -1,12 +1,12 @@
 #pragma once
 
-#include <hyprutils/os/FileDescriptor.hpp>
-#include <hyprwire/core/ServerSocket.hpp>
+#include <abyssutils/os/FileDescriptor.hpp>
+#include <abysswire/core/ServerSocket.hpp>
 #include <cstdint>
 #include <vector>
 #include "../../helpers/Memory.hpp"
 
-namespace Hyprwire {
+namespace Abysswire {
     class IMessage;
     class CServerSocket;
     class CServerObject;
@@ -26,7 +26,7 @@ namespace Hyprwire {
         void                           onGeneric(const CGenericProtocolMessage& msg);
         void                           dispatchFirstPoll();
 
-        Hyprutils::OS::CFileDescriptor m_fd;
+        Abyssutils::OS::CFileDescriptor m_fd;
 
         int                            m_pid           = -1;
         bool                           m_firstPollDone = false;

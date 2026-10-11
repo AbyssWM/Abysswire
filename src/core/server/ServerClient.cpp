@@ -9,13 +9,13 @@
 #include "../../helpers/Syscalls.hpp"
 #include "../../Macros.hpp"
 
-#include <hyprwire/core/implementation/ServerImpl.hpp>
-#include <hyprwire/core/implementation/Spec.hpp>
+#include <abysswire/core/implementation/ServerImpl.hpp>
+#include <abysswire/core/implementation/Spec.hpp>
 
 #include <sys/socket.h>
 #include <sys/types.h>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 CServerClient::CServerClient(int fd) : m_fd(fd) {
     m_fd.setFlags(O_CLOEXEC);

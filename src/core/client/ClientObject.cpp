@@ -11,7 +11,7 @@
 #include <cstring>
 #include <ffi.h>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 CClientObject::CClientObject(SP<CClientSocket> client) : m_client(client) {
     ;

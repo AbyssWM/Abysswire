@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.19)
 
 file(READ "${CMAKE_SOURCE_DIR}/VERSION" VER_RAW)
-string(STRIP ${VER_RAW} HYPRWIRE_VERSION)
+string(STRIP ${VER_RAW} ABYSSWIRE_VERSION)
 
-add_compile_definitions(HYPRWIRE_VERSION="${HYPRWIRE_VERSION}")
+add_compile_definitions(ABYSSWIRE_VERSION="${ABYSSWIRE_VERSION}")
 
 project(
-  hyprwire
-  VERSION ${HYPRWIRE_VERSION}
+  abysswire
+  VERSION ${ABYSSWIRE_VERSION}
   DESCRIPTION "A fast and consistent wire protocol for IPC")
 
 include(CTest)
@@ -25,11 +25,11 @@ pkg_check_modules(
   deps
   REQUIRED
   IMPORTED_TARGET
-  hyprutils>=0.9.0
+  abyssutils>=0.9.0
   libffi
 )
 
-configure_file(hyprwire.pc.in hyprwire.pc @ONLY)
+configure_file(abysswire.pc.in abysswire.pc @ONLY)
 
 set(CMAKE_CXX_STANDARD 23)
 add_compile_options(
@@ -42,12 +42,12 @@ add_compile_options(
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES DEBUG)
-  message(STATUS "Configuring hyprwire in Debug")
-  add_compile_definitions(HYPRWIRE_DEBUG)
+  message(STATUS "Configuring abysswire in Debug")
+  add_compile_definitions(ABYSSWIRE_DEBUG)
   set(BUILD_TESTING ON)
 else()
   add_compile_options(-O3)
-  message(STATUS "Configuring hyprwire in Release")
+  message(STATUS "Configuring abysswire in Release")
   set(BUILD_TESTING OFF)
 endif()
 
@@ -59,19 +59,19 @@ file(GLOB_RECURSE PUBLIC_HEADERS CONFIGURE_DEPENDS "include/*.hpp")
 execute_process(COMMAND ./scripts/generateShaderIncludes.sh
                 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-add_library(hyprwire SHARED ${SRCFILES})
+add_library(abysswire SHARED ${SRCFILES})
 target_include_directories(
-  hyprwire
+  abysswire
   PUBLIC "./include"
   PRIVATE "./src" "${CMAKE_BINARY_DIR}")
-set_target_properties(hyprwire PROPERTIES VERSION ${HYPRWIRE_VERSION} SOVERSION
+set_target_properties(abysswire PROPERTIES VERSION ${ABYSSWIRE_VERSION} SOVERSION
                                                                       3)
-target_link_libraries(hyprwire PkgConfig::deps)
+target_link_libraries(abysswire PkgConfig::deps)
 
 check_include_file("sys/timerfd.h" HAS_TIMERFD)
 pkg_check_modules(epoll IMPORTED_TARGET epoll-shim)
 if(NOT HAS_TIMERFD AND epoll_FOUND)
-  target_link_libraries(hyprwire PkgConfig::epoll)
+  target_link_libraries(abysswire PkgConfig::epoll)
 endif()
 
 # helper func
@@ -96,8 +96,8 @@ function(protocol proto_dir proto_name is_client out_base out_var)
   add_custom_command(
     OUTPUT "${out_cpp}" "${out_hpp}"
     COMMAND "${CMAKE_COMMAND}" -E make_directory "${outdir}"
-    COMMAND hyprwire-scanner ${mode} "${xml_in}" "${outdir}"
-    DEPENDS hyprwire-scanner "${xml_in}"
+    COMMAND abysswire-scanner ${mode} "${xml_in}" "${outdir}"
+    DEPENDS abysswire-scanner "${xml_in}"
     VERBATIM
     COMMENT
       "Generating ${suffix} protocol from ${proto_name}.xml -> ${out_base}-${suffix}.{cpp,hpp}"
@@ -124,48 +124,48 @@ if(BUILD_TESTING)
            SERVER_GEN)
   add_executable(client "${CMAKE_SOURCE_DIR}/tests/Client.cpp"
                         "tests/generated/test_protocol_v1-client.cpp")
-  target_link_libraries(client PRIVATE PkgConfig::deps hyprwire)
+  target_link_libraries(client PRIVATE PkgConfig::deps abysswire)
   add_dependencies(tests client)
 
   add_executable(server "${CMAKE_SOURCE_DIR}/tests/Server.cpp"
                         "tests/generated/test_protocol_v1-server.cpp")
-  target_link_libraries(server PRIVATE PkgConfig::deps hyprwire)
+  target_link_libraries(server PRIVATE PkgConfig::deps abysswire)
   add_dependencies(tests server)
 
   add_executable(fork "${CMAKE_SOURCE_DIR}/tests/Fork.cpp"
                         "tests/generated/test_protocol_v1-client.cpp"
                         "tests/generated/test_protocol_v1-server.cpp")
-  target_link_libraries(fork PRIVATE PkgConfig::deps hyprwire)
+  target_link_libraries(fork PRIVATE PkgConfig::deps abysswire)
   add_dependencies(tests fork)
 
   # GTests
   find_package(GTest CONFIG REQUIRED)
   include(GoogleTest)
   file(GLOB_RECURSE TESTFILES CONFIGURE_DEPENDS "tests/unit/*.cpp")
-  add_executable(hyprwire_tests ${TESTFILES})
+  add_executable(abysswire_tests ${TESTFILES})
 
-  target_compile_options(hyprwire_tests PRIVATE --coverage -fsanitize=address)
-  target_link_options(hyprwire_tests PRIVATE --coverage)
+  target_compile_options(abysswire_tests PRIVATE --coverage -fsanitize=address)
+  target_link_options(abysswire_tests PRIVATE --coverage)
   
   target_include_directories(
-    hyprwire_tests
+    abysswire_tests
     PUBLIC "./include"
     PRIVATE "./src" "./src/include" "./protocols" "${CMAKE_BINARY_DIR}")
-  target_link_libraries(hyprwire_tests PRIVATE asan hyprwire GTest::gtest_main
+  target_link_libraries(abysswire_tests PRIVATE asan abysswire GTest::gtest_main
                                                        PkgConfig::deps)
-  gtest_discover_tests(hyprwire_tests
+  gtest_discover_tests(abysswire_tests
     PROPERTIES ENVIRONMENT "ASAN_OPTIONS=detect_leaks=0"
   )
 
-  # Add coverage to hyprwire for test builds
-  target_compile_options(hyprwire PRIVATE --coverage)
-  target_link_options(hyprwire PRIVATE --coverage)
+  # Add coverage to abysswire for test builds
+  target_compile_options(abysswire PRIVATE --coverage)
+  target_link_options(abysswire PRIVATE --coverage)
 else()
   message(STATUS "building tests is disabled")
 endif()
 
 # Installation
-install(TARGETS hyprwire)
-install(DIRECTORY "include/hyprwire" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(FILES ${CMAKE_BINARY_DIR}/hyprwire.pc
+install(TARGETS abysswire)
+install(DIRECTORY "include/abysswire" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_BINARY_DIR}/abysswire.pc
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)

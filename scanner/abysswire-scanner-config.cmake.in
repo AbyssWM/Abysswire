@@ -2,10 +2,10 @@
 
 set_and_check(BINDIR "@PACKAGE_CMAKE_INSTALL_BINDIR@")
 
-function(hyprwire_protocol targets protoName protoPath outputPath)
+function(abysswire_protocol targets protoName protoPath outputPath)
     add_custom_command(
         OUTPUT "${outputPath}/${protoName}.cpp"
-        COMMAND "${BINDIR}/hyprwire-scanner" "${protoPath}/${protoName}.xml" "${outputPath}"
+        COMMAND "${BINDIR}/abysswire-scanner" "${protoPath}/${protoName}.xml" "${outputPath}"
     )
     foreach(target ${targets})
         target_sources(${target} PRIVATE "${outputPath}/${protoName}.cpp")
@@ -13,4 +13,4 @@ function(hyprwire_protocol targets protoName protoPath outputPath)
     endforeach()
 endfunction()
 
-check_required_components(hyprwire-scanner)
+check_required_components(abysswire-scanner)

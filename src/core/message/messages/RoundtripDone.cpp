@@ -6,9 +6,9 @@
 
 #include <cstring>
 #include <stdexcept>
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 CRoundtripDoneMessage::CRoundtripDoneMessage(const std::vector<uint8_t>& data, size_t offset) {
     m_type = HW_MESSAGE_TYPE_ROUNDTRIP_DONE;

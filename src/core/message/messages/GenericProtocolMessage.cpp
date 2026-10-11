@@ -6,9 +6,9 @@
 
 #include <cstring>
 #include <stdexcept>
-#include <hyprwire/core/types/MessageMagic.hpp>
+#include <abysswire/core/types/MessageMagic.hpp>
 
-using namespace Hyprwire;
+using namespace Abysswire;
 
 CGenericProtocolMessage::CGenericProtocolMessage(const std::vector<uint8_t>& data, std::vector<int>& fds, size_t offset) {
     m_type = HW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE;

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <hyprutils/memory/SharedPtr.hpp>
+#include <abyssutils/memory/SharedPtr.hpp>
 #include <functional>
 #include <string_view>
 
-namespace Hyprwire {
+namespace Abysswire {
     class IServerClient;
     class IServerSocket;
     class IClientSocket;
@@ -21,15 +21,15 @@ namespace Hyprwire {
 
         virtual void                                       setOnDestroy(std::function<void()>&& fn);
 
-        virtual Hyprutils::Memory::CSharedPointer<IObject> self() = 0;
+        virtual Abyssutils::Memory::CSharedPointer<IObject> self() = 0;
 
         // only for server objects
-        virtual Hyprutils::Memory::CSharedPointer<IServerSocket> serverSock();
-        virtual Hyprutils::Memory::CSharedPointer<IServerClient> client() = 0;
+        virtual Abyssutils::Memory::CSharedPointer<IServerSocket> serverSock();
+        virtual Abyssutils::Memory::CSharedPointer<IServerClient> client() = 0;
         virtual void                                             error(uint32_t id, const std::string_view& message);
 
         // only for client objects
-        virtual Hyprutils::Memory::CSharedPointer<IClientSocket> clientSock();
+        virtual Abyssutils::Memory::CSharedPointer<IClientSocket> clientSock();
 
       protected:
         IObject() = default;
