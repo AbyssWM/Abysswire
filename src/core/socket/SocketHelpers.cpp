@@ -43,7 +43,7 @@ SSocketRawParsedMessage Abysswire::parseFromFd(const Abyssutils::OS::CFileDescri
         if (sizeWritten < 0)
             return {.bad = true};
 
-        message.data.append_range(std::span<uint8_t>(buffer, sizeWritten));
+        { const auto& r_ = std::span<uint8_t>(buffer, sizeWritten); message.data.insert(message.data.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
 
         // check for control
         cmsghdr* recvdCmsg = CMSG_FIRSTHDR(&msg);

@@ -62,7 +62,7 @@ CHandshakeBeginMessage::CHandshakeBeginMessage(const std::vector<uint32_t>& vers
         HW_MESSAGE_MAGIC_TYPE_UINT,
     };
 
-    m_data.append_range(g_messageParser->encodeVarInt(versions.size()));
+    { const auto& r_ = g_messageParser->encodeVarInt(versions.size()); m_data.insert(m_data.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
 
     const size_t HEAD_SIZE = m_data.size();
 
