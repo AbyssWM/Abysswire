@@ -22,6 +22,7 @@
 #include <abysswire/core/implementation/ServerImpl.hpp>
 #include <abysswire/core/implementation/Spec.hpp>
 #include <algorithm>
+#include <limits>
 
 using namespace Abysswire;
 
@@ -285,29 +286,25 @@ std::pair<size_t, size_t> CMessageParser::parseVarInt(const std::vector<uint8_t>
 }
 
 std::pair<size_t, size_t> CMessageParser::parseVarInt(const std::span<const uint8_t>& data) {
-    size_t     rolling = 0;
-    size_t     i       = 0;
-    const auto LEN     = data.size();
-    do {
-        rolling += ((sc<uint8_t>(data[i] << 1) >> 1) << (i * 7));
-        i++;
-    } while (i < LEN && (data[i - 1] & 0x80));
-
-    return {rolling, i};
+    size_t rolling = 0;
+    for (size_t i = 0; i < data.size(); ++i) {
+        const size_t shift = i * 7;
+        const size_t value = data[i] & 0x7F;
+        if (shift >= std::numeric_limits<size_t>::digits || value > (std::numeric_limits<size_t>::max() >> shift))
+            return {0, 0};
+        rolling |= value << shift;
+        if (!(data[i] & 0x80))
+            return {rolling, i + 1};
+    }
+    return {0, 0};
 }
 
 std::vector<uint8_t> CMessageParser::encodeVarInt(size_t num) {
     std::vector<uint8_t> data;
-    data.resize(4);
-    data[0] = (uint8_t)((num << 25) >> 25) | 0x80;
-    data[1] = (uint8_t)((num << 18) >> 25) | 0x80;
-    data[2] = (uint8_t)((num << 11) >> 25) | 0x80;
-    data[3] = (uint8_t)((num << 4) >> 25) | 0x80;
-    while (data.back() == 0x80 && data.size() > 1) {
-        data.pop_back();
-    }
-
-    data.back() &= ~0x80;
+    do {
+        data.emplace_back((num & 0x7F) | (num > 0x7F ? 0x80 : 0));
+        num >>= 7;
+    } while (num);
 
     return data;
 }

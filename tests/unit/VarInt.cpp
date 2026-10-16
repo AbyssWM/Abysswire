@@ -3,12 +3,14 @@
 #include "core/message/MessageParser.hpp"
 
 #include <array>
+#include <limits>
 
 TEST(VarInt, EncodeThenParseRoundtripAtBoundaries) {
     Abysswire::CMessageParser    parser;
 
-    const std::array<size_t, 9> values = {
+    const std::array<size_t, 12> values = {
         0, 1, 127, 128, 16383, 16384, 2097151, 2097152, 268435455,
+        268435456, 0xFFFFFFFFu, std::numeric_limits<size_t>::max(),
     };
 
     for (const auto value : values) {
@@ -21,6 +23,17 @@ TEST(VarInt, EncodeThenParseRoundtripAtBoundaries) {
 
         EXPECT_EQ(encoded.back() & 0x80, 0);
     }
+}
+
+TEST(VarInt, RejectsEmptyTruncatedAndOverflowingInput) {
+    Abysswire::CMessageParser parser;
+    const auto invalid = std::pair<size_t, size_t>{0, 0};
+    EXPECT_EQ(parser.parseVarInt(std::span<const uint8_t>{}), invalid);
+    EXPECT_EQ(parser.parseVarInt(std::vector<uint8_t>{0x80}, 0), invalid);
+    EXPECT_EQ(parser.parseVarInt(std::vector<uint8_t>(20, 0xFF), 0), invalid);
+    auto overflowing = parser.encodeVarInt(std::numeric_limits<size_t>::max());
+    overflowing.back() = 0x7F;
+    EXPECT_EQ(parser.parseVarInt(overflowing, 0), invalid);
 }
 
 TEST(VarInt, ParseFromVectorWithOffset) {

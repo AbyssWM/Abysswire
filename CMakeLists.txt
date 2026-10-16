@@ -51,8 +51,6 @@ else()
   set(BUILD_TESTING OFF)
 endif()
 
-add_compile_definitions(HT_HIDDEN=public)
-
 file(GLOB_RECURSE SRCFILES CONFIGURE_DEPENDS "src/*.cpp" "include/*.hpp")
 file(GLOB_RECURSE PUBLIC_HEADERS CONFIGURE_DEPENDS "include/*.hpp")
 
@@ -81,7 +79,7 @@ function(protocol proto_dir proto_name is_client out_base out_var)
     set(suffix "server")
   endif()
 
-  set(outdir "${CMAKE_SOURCE_DIR}/tests/generated")
+  set(outdir "${CMAKE_CURRENT_BINARY_DIR}/tests/generated")
   set(xml_in "${proto_dir}/${proto_name}.xml")
 
   set(tmp_cpp "${outdir}/${proto_name}-${suffix}.cpp")
@@ -120,18 +118,20 @@ if(BUILD_TESTING)
   protocol("${CMAKE_SOURCE_DIR}/tests" "protocol-v1" FALSE "test_protocol_v1"
            SERVER_GEN)
   add_executable(client "${CMAKE_SOURCE_DIR}/tests/Client.cpp"
-                        "tests/generated/test_protocol_v1-client.cpp")
+                        ${CLIENT_GEN})
+  target_include_directories(client PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/tests")
   target_link_libraries(client PRIVATE PkgConfig::deps abysswire)
   add_dependencies(tests client)
 
   add_executable(server "${CMAKE_SOURCE_DIR}/tests/Server.cpp"
-                        "tests/generated/test_protocol_v1-server.cpp")
+                        ${SERVER_GEN})
+  target_include_directories(server PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/tests")
   target_link_libraries(server PRIVATE PkgConfig::deps abysswire)
   add_dependencies(tests server)
 
   add_executable(fork "${CMAKE_SOURCE_DIR}/tests/Fork.cpp"
-                        "tests/generated/test_protocol_v1-client.cpp"
-                        "tests/generated/test_protocol_v1-server.cpp")
+                        ${CLIENT_GEN} ${SERVER_GEN})
+  target_include_directories(fork PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/tests")
   target_link_libraries(fork PRIVATE PkgConfig::deps abysswire)
   add_dependencies(tests fork)
 

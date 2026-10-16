@@ -14,6 +14,9 @@ using namespace Abysswire;
 CFatalErrorMessage::CFatalErrorMessage(const std::vector<uint8_t>& data, size_t offset) {
     m_type = AW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR;
 
+    if (offset > data.size() || data.size() - offset < 14)
+        return;
+
     try {
         if (data.at(offset + 0) != AW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR)
             return;
@@ -34,6 +37,9 @@ CFatalErrorMessage::CFatalErrorMessage(const std::vector<uint8_t>& data, size_t 
         size_t needle = 12;
 
         auto [strLen, strLenLen] = g_messageParser->parseVarInt(data, offset + needle);
+
+        if (!strLenLen || strLen > data.size() - offset - needle - strLenLen)
+            return;
 
         needle += strLenLen;
 

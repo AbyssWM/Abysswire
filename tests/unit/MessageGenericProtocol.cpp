@@ -131,3 +131,26 @@ TEST(MessagesGenericProtocol, ResolveSeqUpdatesObjectAndSerializedPayload) {
     std::memcpy(&encodedId, msg.m_data.data() + 2, sizeof(encodedId));
     EXPECT_EQ(encodedId, 0xAABBCCDDu);
 }
+
+TEST(MessagesGenericProtocol, RejectsTruncatedHeadersAndStringArraysAtOffset) {
+    for (size_t size = 0; size < 12; ++size) {
+        auto raw = makeGenericHeader(1, 2);
+        raw.resize(size);
+        std::vector<int> fds;
+        EXPECT_EQ(CGenericProtocolMessage(raw, fds, 0).m_len, 0);
+    }
+
+    auto raw = makeGenericHeader(1, 2);
+    raw.insert(raw.end(), {AW_MESSAGE_MAGIC_TYPE_ARRAY, AW_MESSAGE_MAGIC_TYPE_VARCHAR, 1, 0xFF});
+    raw.insert(raw.begin(), 7, 0xFF);
+    std::vector<int> fds;
+    EXPECT_EQ(CGenericProtocolMessage(raw, fds, 7).m_len, 0);
+}
+
+TEST(MessagesGenericProtocol, LeavesFdQueueIntactWhenMessageIsMalformed) {
+    auto raw = makeGenericHeader(1, 2);
+    raw.insert(raw.end(), {AW_MESSAGE_MAGIC_TYPE_FD, 0xFF});
+    std::vector<int> fds = {11};
+    EXPECT_EQ(CGenericProtocolMessage(raw, fds, 0).m_len, 0);
+    EXPECT_EQ(fds, std::vector<int>{11});
+}

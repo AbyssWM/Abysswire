@@ -13,6 +13,12 @@ using namespace Abysswire;
 CGenericProtocolMessage::CGenericProtocolMessage(const std::vector<uint8_t>& data, std::vector<int>& fds, size_t offset) {
     m_type = AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE;
 
+    if (offset > data.size() || data.size() - offset < 12)
+        return;
+
+    const auto available = data.size() - offset;
+    size_t pendingFds = 0;
+
     try {
         if (data.at(offset + 0) != AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE)
             return;
@@ -37,12 +43,16 @@ CGenericProtocolMessage::CGenericProtocolMessage(const std::vector<uint8_t>& dat
                 case AW_MESSAGE_MAGIC_TYPE_SEQ: i += 5; break;
                 case AW_MESSAGE_MAGIC_TYPE_VARCHAR: {
                     auto [a, b] = g_messageParser->parseVarInt(data, offset + i + 1);
+                    if (!b || b > available - i - 1 || a > available - i - 1 - b)
+                        return;
                     i += a + b + 1;
                     break;
                 }
                 case AW_MESSAGE_MAGIC_TYPE_ARRAY: {
                     const auto arrType    = sc<eMessageMagic>(data.at(offset + i + 1));
-                    auto [arrLen, lenLen] = g_messageParser->parseVarInt(std::span<const uint8_t>{&data[offset + i + 2], data.size() - i});
+                    auto [arrLen, lenLen] = g_messageParser->parseVarInt(data, offset + i + 2);
+                    if (!lenLen)
+                        return;
                     size_t arrMessageLen  = 2 + lenLen;
 
                     if (arrLen >= 10000) {
@@ -61,22 +71,19 @@ CGenericProtocolMessage::CGenericProtocolMessage(const std::vector<uint8_t>& dat
                         }
                         case AW_MESSAGE_MAGIC_TYPE_VARCHAR: {
                             for (size_t j = 0; j < arrLen; ++j) {
-                                auto [strLen, strlenLen] =
-                                    g_messageParser->parseVarInt(std::span<const uint8_t>{&data[offset + i + arrMessageLen], data.size() - i - arrMessageLen});
+                                if (arrMessageLen > available - i)
+                                    return;
+                                auto [strLen, strlenLen] = g_messageParser->parseVarInt(data, offset + i + arrMessageLen);
+                                if (!strlenLen || strlenLen > available - i - arrMessageLen || strLen > available - i - arrMessageLen - strlenLen)
+                                    return;
                                 arrMessageLen += strLen + strlenLen;
                             }
                             break;
                         }
                         case AW_MESSAGE_MAGIC_TYPE_FD: {
-                            for (size_t j = 0; j < arrLen; ++j) {
-                                if (fds.empty())
-                                    return;
-
-                                m_fds.emplace_back(fds[0]);
-                                fds.erase(fds.begin(), fds.begin() + 1);
-                            }
-
-                            i += 0;
+                            if (arrLen > fds.size() - pendingFds)
+                                return;
+                            pendingFds += arrLen;
                             break;
                         }
                         default: {
@@ -89,13 +96,12 @@ CGenericProtocolMessage::CGenericProtocolMessage(const std::vector<uint8_t>& dat
                     break;
                 }
                 case AW_MESSAGE_MAGIC_TYPE_FD: {
-                    if (fds.empty()) {
+                    if (pendingFds == fds.size()) {
                         Debug::log(TRACE, "GenericProtocolMessage: AW_MESSAGE_MAGIC_TYPE_FD but fd queue is empty");
                         return;
                     }
 
-                    m_fds.emplace_back(fds[0]);
-                    fds.erase(fds.begin(), fds.begin() + 1);
+                    ++pendingFds;
 
                     i += 1;
                     break;
@@ -108,6 +114,8 @@ CGenericProtocolMessage::CGenericProtocolMessage(const std::vector<uint8_t>& dat
         }
 
         m_len = i + 1;
+        m_fds.assign(fds.begin(), fds.begin() + pendingFds);
+        fds.erase(fds.begin(), fds.begin() + pendingFds);
 
         m_dataSpan = std::span<const uint8_t>{data.begin() + 11 + offset, m_len - 11};
 

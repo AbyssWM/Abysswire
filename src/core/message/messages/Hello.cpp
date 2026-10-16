@@ -17,6 +17,9 @@ CHelloMessage::CHelloMessage(const std::vector<uint8_t>& data, size_t offset) {
             AW_MESSAGE_TYPE_SUP, AW_MESSAGE_MAGIC_TYPE_VARCHAR, 0x03, 'V', 'A', 'X', AW_MESSAGE_MAGIC_END,
         };
 
+        if (offset > data.size() || data.size() - offset < expected.size())
+            return;
+
         if (std::memcmp(expected.data(), &data.at(offset), expected.size()) != 0)
             return;
 

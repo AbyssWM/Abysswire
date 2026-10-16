@@ -13,6 +13,9 @@ using namespace Abysswire;
 CBindProtocolMessage::CBindProtocolMessage(const std::vector<uint8_t>& data, size_t offset) {
     m_type = AW_MESSAGE_TYPE_BIND_PROTOCOL;
 
+    if (offset > data.size() || data.size() - offset < 14)
+        return;
+
     try {
         if (data.at(offset + 0) != AW_MESSAGE_TYPE_BIND_PROTOCOL)
             return;
@@ -29,6 +32,9 @@ CBindProtocolMessage::CBindProtocolMessage(const std::vector<uint8_t>& data, siz
 
         auto [strLen, varIntLen] = g_messageParser->parseVarInt(data, offset + needle);
 
+        if (!varIntLen || strLen > data.size() - offset - needle - varIntLen)
+            return;
+
         needle += varIntLen;
 
         m_protocol = std::string_view{rc<const char*>(&data.at(offset + needle)), strLen};
@@ -36,6 +42,9 @@ CBindProtocolMessage::CBindProtocolMessage(const std::vector<uint8_t>& data, siz
         needle += strLen;
 
         if (data.at(offset + needle) != AW_MESSAGE_MAGIC_TYPE_UINT)
+            return;
+
+        if (data.size() - offset - needle < 6)
             return;
 
         std::memcpy(&m_version, &data.at(offset + needle + 1), sizeof(m_version));

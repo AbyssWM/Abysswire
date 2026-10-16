@@ -19,7 +19,7 @@ jobs:
           pacman --noconfirm --noprogressbar -Syyu
           pacman --noconfirm --noprogressbar -S \
             base-devel cmake git ninja pkgconf clang lld libc++ \
-            pixman libffi wayland wayland-protocols gtest
+            pixman libffi pugixml wayland wayland-protocols gtest
 
       - name: Checkout
         uses: actions/checkout@v6

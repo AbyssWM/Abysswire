@@ -26,6 +26,9 @@ CHandshakeProtocolsMessage::CHandshakeProtocolsMessage(const std::vector<uint8_t
 
         auto [els, varIntLen] = g_messageParser->parseVarInt(data, offset + needle);
 
+        if (!varIntLen)
+            return;
+
         needle += varIntLen;
 
         // max 2048 protocols per connection
@@ -36,6 +39,9 @@ CHandshakeProtocolsMessage::CHandshakeProtocolsMessage(const std::vector<uint8_t
 
         for (size_t i = 0; i < els; ++i) {
             auto [strLen, strLenLen] = g_messageParser->parseVarInt(data, offset + needle);
+
+            if (!strLenLen || strLen > data.size() - offset - needle - strLenLen)
+                return;
 
             m_protocols.at(i) = std::string_view{rc<const char*>(&data.at(offset + needle + strLenLen)), strLen};
             needle += strLen + strLenLen;

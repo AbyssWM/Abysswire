@@ -12,6 +12,9 @@ using namespace Abysswire;
 CNewObjectMessage::CNewObjectMessage(const std::vector<uint8_t>& data, size_t offset) {
     m_type = AW_MESSAGE_TYPE_NEW_OBJECT;
 
+    if (offset > data.size() || data.size() - offset < 12)
+        return;
+
     try {
         if (data.at(offset + 0) != AW_MESSAGE_TYPE_NEW_OBJECT)
             return;

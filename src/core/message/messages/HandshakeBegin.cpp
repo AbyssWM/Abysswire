@@ -26,10 +26,16 @@ CHandshakeBeginMessage::CHandshakeBeginMessage(const std::vector<uint8_t>& data,
 
         auto [nVers, varIntLen] = g_messageParser->parseVarInt(data, offset + needle);
 
+        if (!varIntLen)
+            return;
+
         needle += varIntLen;
 
         // Limit the amount of versions to 256, doesn't make sense otherwise.
         if (nVers >= 256)
+            return;
+
+        if (nVers > (data.size() - offset - needle) / sizeof(uint32_t))
             return;
 
         m_versionsSupported.resize(nVers);
@@ -69,7 +75,7 @@ CHandshakeBeginMessage::CHandshakeBeginMessage(const std::vector<uint32_t>& vers
     m_data.resize(HEAD_SIZE + (versions.size() * 4));
 
     for (size_t i = 0; i < versions.size(); ++i) {
-        *rc<uint32_t*>(&m_data.at(HEAD_SIZE + (i * 4))) = versions.at(i);
+        std::memcpy(&m_data.at(HEAD_SIZE + (i * 4)), &versions.at(i), sizeof(uint32_t));
     }
 
     m_data.emplace_back(AW_MESSAGE_MAGIC_END);
