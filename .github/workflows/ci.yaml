@@ -72,7 +72,7 @@ jobs:
           export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig:$PREFIX/share/pkgconfig"
           export CMAKE_PREFIX_PATH="$PREFIX"
           cmake -S . -B build -G Ninja \
-            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_BUILD_TYPE=Debug \
             -DCMAKE_INSTALL_PREFIX="$PREFIX" \
             -DCMAKE_INSTALL_LIBDIR=lib \
             -DCMAKE_INSTALL_RPATH="$PREFIX/lib" \
@@ -84,7 +84,7 @@ jobs:
           export PATH="$PREFIX/bin:$PATH"
           export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig:$PREFIX/share/pkgconfig"
           export CMAKE_PREFIX_PATH="$PREFIX"
-          cd build && ctest --output-on-failure || true
+          cd build && ctest --output-on-failure
 
       - name: Install
         run: |

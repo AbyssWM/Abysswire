@@ -56,9 +56,6 @@ add_compile_definitions(HT_HIDDEN=public)
 file(GLOB_RECURSE SRCFILES CONFIGURE_DEPENDS "src/*.cpp" "include/*.hpp")
 file(GLOB_RECURSE PUBLIC_HEADERS CONFIGURE_DEPENDS "include/*.hpp")
 
-execute_process(COMMAND ./scripts/generateShaderIncludes.sh
-                WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
-
 add_library(abysswire SHARED ${SRCFILES})
 target_include_directories(
   abysswire
