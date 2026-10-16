@@ -67,14 +67,14 @@ namespace {
         const std::vector<SMethod>& c2s() override {
             static const std::vector<SMethod> methods = {
                 SMethod{.idx = 0, .params = {}, .returnsType = "", .since = 0, .isDestructor = true},
-                SMethod{.idx = 1, .params = {HW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
+                SMethod{.idx = 1, .params = {AW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
             };
             return methods;
         }
 
         const std::vector<SMethod>& s2c() override {
             static const std::vector<SMethod> methods = {
-                SMethod{.idx = 0, .params = {HW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
+                SMethod{.idx = 0, .params = {AW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
             };
             return methods;
         }

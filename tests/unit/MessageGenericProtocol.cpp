@@ -16,11 +16,11 @@ static void appendU32(std::vector<uint8_t>& data, uint32_t value) {
 
 static std::vector<uint8_t> makeGenericHeader(uint32_t object, uint32_t method) {
     std::vector<uint8_t> data = {
-        HW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE,
-        HW_MESSAGE_MAGIC_TYPE_OBJECT,
+        AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE,
+        AW_MESSAGE_MAGIC_TYPE_OBJECT,
     };
     appendU32(data, object);
-    data.push_back(HW_MESSAGE_MAGIC_TYPE_UINT);
+    data.push_back(AW_MESSAGE_MAGIC_TYPE_UINT);
     appendU32(data, method);
     return data;
 }
@@ -28,9 +28,9 @@ static std::vector<uint8_t> makeGenericHeader(uint32_t object, uint32_t method) 
 TEST(MessagesGenericProtocol, ParsesObjectMethodAndPayloadSpan) {
     auto raw = makeGenericHeader(0xABCD, 3);
 
-    raw.push_back(HW_MESSAGE_MAGIC_TYPE_UINT);
+    raw.push_back(AW_MESSAGE_MAGIC_TYPE_UINT);
     appendU32(raw, 55);
-    raw.push_back(HW_MESSAGE_MAGIC_END);
+    raw.push_back(AW_MESSAGE_MAGIC_END);
 
     std::vector<int>        fds;
     CGenericProtocolMessage msg(raw, fds, 0);
@@ -39,16 +39,16 @@ TEST(MessagesGenericProtocol, ParsesObjectMethodAndPayloadSpan) {
     EXPECT_EQ(msg.m_object, 0xABCDu);
     EXPECT_EQ(msg.m_method, 3u);
     ASSERT_FALSE(msg.m_dataSpan.empty());
-    EXPECT_EQ(msg.m_dataSpan.front(), HW_MESSAGE_MAGIC_TYPE_UINT);
-    EXPECT_EQ(msg.m_dataSpan.back(), HW_MESSAGE_MAGIC_END);
+    EXPECT_EQ(msg.m_dataSpan.front(), AW_MESSAGE_MAGIC_TYPE_UINT);
+    EXPECT_EQ(msg.m_dataSpan.back(), AW_MESSAGE_MAGIC_END);
     EXPECT_TRUE(msg.m_fds.empty());
     EXPECT_TRUE(fds.empty());
 }
 
 TEST(MessagesGenericProtocol, ConsumesSingleFdToken) {
     auto raw = makeGenericHeader(1, 2);
-    raw.push_back(HW_MESSAGE_MAGIC_TYPE_FD);
-    raw.push_back(HW_MESSAGE_MAGIC_END);
+    raw.push_back(AW_MESSAGE_MAGIC_TYPE_FD);
+    raw.push_back(AW_MESSAGE_MAGIC_END);
 
     std::vector<int>        fds = {11};
     CGenericProtocolMessage msg(raw, fds, 0);
@@ -63,11 +63,11 @@ TEST(MessagesGenericProtocol, ConsumesArrayFdTokens) {
     CMessageParser parser;
     auto           raw = makeGenericHeader(1, 2);
 
-    raw.push_back(HW_MESSAGE_MAGIC_TYPE_ARRAY);
-    raw.push_back(HW_MESSAGE_MAGIC_TYPE_FD);
+    raw.push_back(AW_MESSAGE_MAGIC_TYPE_ARRAY);
+    raw.push_back(AW_MESSAGE_MAGIC_TYPE_FD);
     const auto count = parser.encodeVarInt(2);
     raw.insert(raw.end(), count.begin(), count.end());
-    raw.push_back(HW_MESSAGE_MAGIC_END);
+    raw.push_back(AW_MESSAGE_MAGIC_END);
 
     std::vector<int>        fds = {4, 5};
     CGenericProtocolMessage msg(raw, fds, 0);
@@ -81,8 +81,8 @@ TEST(MessagesGenericProtocol, ConsumesArrayFdTokens) {
 
 TEST(MessagesGenericProtocol, RejectsFdTokenWithEmptyFdQueue) {
     auto raw = makeGenericHeader(1, 2);
-    raw.push_back(HW_MESSAGE_MAGIC_TYPE_FD);
-    raw.push_back(HW_MESSAGE_MAGIC_END);
+    raw.push_back(AW_MESSAGE_MAGIC_TYPE_FD);
+    raw.push_back(AW_MESSAGE_MAGIC_END);
 
     std::vector<int>        fds;
     CGenericProtocolMessage msg(raw, fds, 0);
@@ -92,10 +92,10 @@ TEST(MessagesGenericProtocol, RejectsFdTokenWithEmptyFdQueue) {
 
 TEST(MessagesGenericProtocol, RejectsInvalidArrayType) {
     auto raw = makeGenericHeader(1, 2);
-    raw.push_back(HW_MESSAGE_MAGIC_TYPE_ARRAY);
-    raw.push_back(HW_MESSAGE_MAGIC_END); // invalid element type
+    raw.push_back(AW_MESSAGE_MAGIC_TYPE_ARRAY);
+    raw.push_back(AW_MESSAGE_MAGIC_END); // invalid element type
     raw.push_back(0x00);                 // arrLen varint = 0
-    raw.push_back(HW_MESSAGE_MAGIC_END);
+    raw.push_back(AW_MESSAGE_MAGIC_END);
 
     std::vector<int>        fds;
     CGenericProtocolMessage msg(raw, fds, 0);
@@ -106,8 +106,8 @@ TEST(MessagesGenericProtocol, RejectsInvalidArrayType) {
 TEST(MessagesGenericProtocol, RejectsTooLargeArray) {
     CMessageParser parser;
     auto           raw = makeGenericHeader(1, 2);
-    raw.push_back(HW_MESSAGE_MAGIC_TYPE_ARRAY);
-    raw.push_back(HW_MESSAGE_MAGIC_TYPE_UINT);
+    raw.push_back(AW_MESSAGE_MAGIC_TYPE_ARRAY);
+    raw.push_back(AW_MESSAGE_MAGIC_TYPE_UINT);
 
     const auto oversized = parser.encodeVarInt(10000);
     raw.insert(raw.end(), oversized.begin(), oversized.end());
@@ -120,7 +120,7 @@ TEST(MessagesGenericProtocol, RejectsTooLargeArray) {
 
 TEST(MessagesGenericProtocol, ResolveSeqUpdatesObjectAndSerializedPayload) {
     auto raw = makeGenericHeader(1, 9);
-    raw.push_back(HW_MESSAGE_MAGIC_END);
+    raw.push_back(AW_MESSAGE_MAGIC_END);
 
     CGenericProtocolMessage msg(std::move(raw), std::vector<int>{});
     msg.resolveSeq(0xAABBCCDD);

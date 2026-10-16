@@ -11,36 +11,36 @@
 using namespace Abysswire;
 
 CGenericProtocolMessage::CGenericProtocolMessage(const std::vector<uint8_t>& data, std::vector<int>& fds, size_t offset) {
-    m_type = HW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE;
+    m_type = AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE;
 
     try {
-        if (data.at(offset + 0) != HW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE)
+        if (data.at(offset + 0) != AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE)
             return;
 
-        if (data.at(offset + 1) != HW_MESSAGE_MAGIC_TYPE_OBJECT)
+        if (data.at(offset + 1) != AW_MESSAGE_MAGIC_TYPE_OBJECT)
             return;
 
         std::memcpy(&m_object, &data.at(offset + 2), sizeof(m_object));
 
-        if (data.at(offset + 6) != HW_MESSAGE_MAGIC_TYPE_UINT)
+        if (data.at(offset + 6) != AW_MESSAGE_MAGIC_TYPE_UINT)
             return;
 
         std::memcpy(&m_method, &data.at(offset + 7), sizeof(m_method));
 
         size_t i = 11;
-        while (data.at(offset + i) != HW_MESSAGE_MAGIC_END) {
+        while (data.at(offset + i) != AW_MESSAGE_MAGIC_END) {
             switch (sc<eMessageMagic>(data.at(offset + i))) {
-                case HW_MESSAGE_MAGIC_TYPE_UINT:
-                case HW_MESSAGE_MAGIC_TYPE_F32:
-                case HW_MESSAGE_MAGIC_TYPE_INT:
-                case HW_MESSAGE_MAGIC_TYPE_OBJECT:
-                case HW_MESSAGE_MAGIC_TYPE_SEQ: i += 5; break;
-                case HW_MESSAGE_MAGIC_TYPE_VARCHAR: {
+                case AW_MESSAGE_MAGIC_TYPE_UINT:
+                case AW_MESSAGE_MAGIC_TYPE_F32:
+                case AW_MESSAGE_MAGIC_TYPE_INT:
+                case AW_MESSAGE_MAGIC_TYPE_OBJECT:
+                case AW_MESSAGE_MAGIC_TYPE_SEQ: i += 5; break;
+                case AW_MESSAGE_MAGIC_TYPE_VARCHAR: {
                     auto [a, b] = g_messageParser->parseVarInt(data, offset + i + 1);
                     i += a + b + 1;
                     break;
                 }
-                case HW_MESSAGE_MAGIC_TYPE_ARRAY: {
+                case AW_MESSAGE_MAGIC_TYPE_ARRAY: {
                     const auto arrType    = sc<eMessageMagic>(data.at(offset + i + 1));
                     auto [arrLen, lenLen] = g_messageParser->parseVarInt(std::span<const uint8_t>{&data[offset + i + 2], data.size() - i});
                     size_t arrMessageLen  = 2 + lenLen;
@@ -51,15 +51,15 @@ CGenericProtocolMessage::CGenericProtocolMessage(const std::vector<uint8_t>& dat
                     }
 
                     switch (arrType) {
-                        case HW_MESSAGE_MAGIC_TYPE_UINT:
-                        case HW_MESSAGE_MAGIC_TYPE_F32:
-                        case HW_MESSAGE_MAGIC_TYPE_INT:
-                        case HW_MESSAGE_MAGIC_TYPE_OBJECT:
-                        case HW_MESSAGE_MAGIC_TYPE_SEQ: {
+                        case AW_MESSAGE_MAGIC_TYPE_UINT:
+                        case AW_MESSAGE_MAGIC_TYPE_F32:
+                        case AW_MESSAGE_MAGIC_TYPE_INT:
+                        case AW_MESSAGE_MAGIC_TYPE_OBJECT:
+                        case AW_MESSAGE_MAGIC_TYPE_SEQ: {
                             arrMessageLen += 4 * arrLen;
                             break;
                         }
-                        case HW_MESSAGE_MAGIC_TYPE_VARCHAR: {
+                        case AW_MESSAGE_MAGIC_TYPE_VARCHAR: {
                             for (size_t j = 0; j < arrLen; ++j) {
                                 auto [strLen, strlenLen] =
                                     g_messageParser->parseVarInt(std::span<const uint8_t>{&data[offset + i + arrMessageLen], data.size() - i - arrMessageLen});
@@ -67,7 +67,7 @@ CGenericProtocolMessage::CGenericProtocolMessage(const std::vector<uint8_t>& dat
                             }
                             break;
                         }
-                        case HW_MESSAGE_MAGIC_TYPE_FD: {
+                        case AW_MESSAGE_MAGIC_TYPE_FD: {
                             for (size_t j = 0; j < arrLen; ++j) {
                                 if (fds.empty())
                                     return;
@@ -88,9 +88,9 @@ CGenericProtocolMessage::CGenericProtocolMessage(const std::vector<uint8_t>& dat
                     i += arrMessageLen;
                     break;
                 }
-                case HW_MESSAGE_MAGIC_TYPE_FD: {
+                case AW_MESSAGE_MAGIC_TYPE_FD: {
                     if (fds.empty()) {
-                        Debug::log(TRACE, "GenericProtocolMessage: HW_MESSAGE_MAGIC_TYPE_FD but fd queue is empty");
+                        Debug::log(TRACE, "GenericProtocolMessage: AW_MESSAGE_MAGIC_TYPE_FD but fd queue is empty");
                         return;
                     }
 
@@ -119,7 +119,7 @@ CGenericProtocolMessage::CGenericProtocolMessage(const std::vector<uint8_t>& dat
 
 CGenericProtocolMessage::CGenericProtocolMessage(std::vector<uint8_t>&& data, std::vector<int>&& fds) : m_fds(std::move(fds)) {
     m_data = std::move(data);
-    m_type = HW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE;
+    m_type = AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE;
 }
 
 const std::vector<int>& CGenericProtocolMessage::fds() const {

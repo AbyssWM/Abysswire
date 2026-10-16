@@ -14,7 +14,7 @@ TEST(MessagesHelloHandshake, HelloCtorBuildsExpectedWireBytes) {
     CHelloMessage              msg;
 
     const std::vector<uint8_t> expected = {
-        HW_MESSAGE_TYPE_SUP, HW_MESSAGE_MAGIC_TYPE_VARCHAR, 0x03, 'V', 'A', 'X', HW_MESSAGE_MAGIC_END,
+        AW_MESSAGE_TYPE_SUP, AW_MESSAGE_MAGIC_TYPE_VARCHAR, 0x03, 'V', 'A', 'X', AW_MESSAGE_MAGIC_END,
     };
 
     EXPECT_EQ(msg.m_data, expected);
@@ -22,7 +22,7 @@ TEST(MessagesHelloHandshake, HelloCtorBuildsExpectedWireBytes) {
 
 TEST(MessagesHelloHandshake, HelloParserAcceptsValidAndRejectsInvalid) {
     const std::vector<uint8_t> valid = {
-        HW_MESSAGE_TYPE_SUP, HW_MESSAGE_MAGIC_TYPE_VARCHAR, 0x03, 'V', 'A', 'X', HW_MESSAGE_MAGIC_END,
+        AW_MESSAGE_TYPE_SUP, AW_MESSAGE_MAGIC_TYPE_VARCHAR, 0x03, 'V', 'A', 'X', AW_MESSAGE_MAGIC_END,
     };
 
     CHelloMessage parsedValid(valid, 0);
@@ -46,7 +46,7 @@ TEST(MessagesHelloHandshake, HandshakeBeginRoundtripParsesVersions) {
 
 TEST(MessagesHelloHandshake, HandshakeBeginRejectsWrongArrayType) {
     const std::vector<uint8_t> raw = {
-        HW_MESSAGE_TYPE_HANDSHAKE_BEGIN, HW_MESSAGE_MAGIC_TYPE_ARRAY, HW_MESSAGE_MAGIC_TYPE_VARCHAR, 0x00, HW_MESSAGE_MAGIC_END,
+        AW_MESSAGE_TYPE_HANDSHAKE_BEGIN, AW_MESSAGE_MAGIC_TYPE_ARRAY, AW_MESSAGE_MAGIC_TYPE_VARCHAR, 0x00, AW_MESSAGE_MAGIC_END,
     };
 
     CHandshakeBeginMessage msg(raw, 0);
@@ -56,9 +56,9 @@ TEST(MessagesHelloHandshake, HandshakeBeginRejectsWrongArrayType) {
 TEST(MessagesHelloHandshake, HandshakeBeginRejectsTooManyVersions) {
     CMessageParser       parser;
     std::vector<uint8_t> raw = {
-        HW_MESSAGE_TYPE_HANDSHAKE_BEGIN,
-        HW_MESSAGE_MAGIC_TYPE_ARRAY,
-        HW_MESSAGE_MAGIC_TYPE_UINT,
+        AW_MESSAGE_TYPE_HANDSHAKE_BEGIN,
+        AW_MESSAGE_MAGIC_TYPE_ARRAY,
+        AW_MESSAGE_MAGIC_TYPE_UINT,
     };
 
     const auto encodedCount = parser.encodeVarInt(256);
@@ -78,7 +78,7 @@ TEST(MessagesHelloHandshake, HandshakeAckRoundtripParsesVersion) {
 
 TEST(MessagesHelloHandshake, HandshakeAckRejectsMalformedPayload) {
     const std::vector<uint8_t> raw = {
-        HW_MESSAGE_TYPE_HANDSHAKE_ACK, HW_MESSAGE_MAGIC_TYPE_UINT, 0x01, 0x02, 0x03, 0x04, HW_MESSAGE_MAGIC_TYPE_UINT,
+        AW_MESSAGE_TYPE_HANDSHAKE_ACK, AW_MESSAGE_MAGIC_TYPE_UINT, 0x01, 0x02, 0x03, 0x04, AW_MESSAGE_MAGIC_TYPE_UINT,
     };
 
     CHandshakeAckMessage msg(raw, 0);

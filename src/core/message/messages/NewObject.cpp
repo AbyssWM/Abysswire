@@ -10,13 +10,13 @@
 using namespace Abysswire;
 
 CNewObjectMessage::CNewObjectMessage(const std::vector<uint8_t>& data, size_t offset) {
-    m_type = HW_MESSAGE_TYPE_NEW_OBJECT;
+    m_type = AW_MESSAGE_TYPE_NEW_OBJECT;
 
     try {
-        if (data.at(offset + 0) != HW_MESSAGE_TYPE_NEW_OBJECT)
+        if (data.at(offset + 0) != AW_MESSAGE_TYPE_NEW_OBJECT)
             return;
 
-        if (data.at(offset + 1) != HW_MESSAGE_MAGIC_TYPE_UINT)
+        if (data.at(offset + 1) != AW_MESSAGE_MAGIC_TYPE_UINT)
             return;
 
         if ((data.size() - offset - 2) < sizeof(m_seq))
@@ -24,12 +24,12 @@ CNewObjectMessage::CNewObjectMessage(const std::vector<uint8_t>& data, size_t of
 
         std::memcpy(&m_id, &data.at(offset + 2), sizeof(m_id));
 
-        if (data.at(offset + 6) != HW_MESSAGE_MAGIC_TYPE_UINT)
+        if (data.at(offset + 6) != AW_MESSAGE_MAGIC_TYPE_UINT)
             return;
 
         std::memcpy(&m_seq, &data.at(offset + 7), sizeof(m_seq));
 
-        if (data.at(offset + 11) != HW_MESSAGE_MAGIC_END)
+        if (data.at(offset + 11) != AW_MESSAGE_MAGIC_END)
             return;
 
         m_len = 12;
@@ -41,10 +41,10 @@ CNewObjectMessage::CNewObjectMessage(const std::vector<uint8_t>& data, size_t of
 }
 
 CNewObjectMessage::CNewObjectMessage(uint32_t seq, uint32_t id) {
-    m_type = HW_MESSAGE_TYPE_NEW_OBJECT;
+    m_type = AW_MESSAGE_TYPE_NEW_OBJECT;
 
     m_data = {
-        HW_MESSAGE_TYPE_NEW_OBJECT, HW_MESSAGE_MAGIC_TYPE_UINT, 0, 0, 0, 0, HW_MESSAGE_MAGIC_TYPE_UINT, 0, 0, 0, 0, HW_MESSAGE_MAGIC_END,
+        AW_MESSAGE_TYPE_NEW_OBJECT, AW_MESSAGE_MAGIC_TYPE_UINT, 0, 0, 0, 0, AW_MESSAGE_MAGIC_TYPE_UINT, 0, 0, 0, 0, AW_MESSAGE_MAGIC_END,
     };
 
     std::memcpy(&m_data[2], &id, sizeof(id));

@@ -11,13 +11,13 @@
 using namespace Abysswire;
 
 CRoundtripDoneMessage::CRoundtripDoneMessage(const std::vector<uint8_t>& data, size_t offset) {
-    m_type = HW_MESSAGE_TYPE_ROUNDTRIP_DONE;
+    m_type = AW_MESSAGE_TYPE_ROUNDTRIP_DONE;
 
     try {
-        if (data.at(offset + 0) != HW_MESSAGE_TYPE_ROUNDTRIP_DONE)
+        if (data.at(offset + 0) != AW_MESSAGE_TYPE_ROUNDTRIP_DONE)
             return;
 
-        if (data.at(offset + 1) != HW_MESSAGE_MAGIC_TYPE_UINT)
+        if (data.at(offset + 1) != AW_MESSAGE_MAGIC_TYPE_UINT)
             return;
 
         if ((data.size() - offset - 2) < sizeof(m_seq))
@@ -25,7 +25,7 @@ CRoundtripDoneMessage::CRoundtripDoneMessage(const std::vector<uint8_t>& data, s
 
         std::memcpy(&m_seq, &data.at(offset + 2), sizeof(m_seq));
 
-        if (data.at(offset + 6) != HW_MESSAGE_MAGIC_END)
+        if (data.at(offset + 6) != AW_MESSAGE_MAGIC_END)
             return;
 
         m_len = 7;
@@ -37,9 +37,9 @@ CRoundtripDoneMessage::CRoundtripDoneMessage(const std::vector<uint8_t>& data, s
 }
 
 CRoundtripDoneMessage::CRoundtripDoneMessage(uint32_t seq) : m_seq(seq) {
-    m_type = HW_MESSAGE_TYPE_ROUNDTRIP_DONE;
+    m_type = AW_MESSAGE_TYPE_ROUNDTRIP_DONE;
 
-    m_data = {HW_MESSAGE_TYPE_ROUNDTRIP_DONE, HW_MESSAGE_MAGIC_TYPE_UINT, 0, 0, 0, 0, HW_MESSAGE_MAGIC_END};
+    m_data = {AW_MESSAGE_TYPE_ROUNDTRIP_DONE, AW_MESSAGE_MAGIC_TYPE_UINT, 0, 0, 0, 0, AW_MESSAGE_MAGIC_END};
 
     std::memcpy(&m_data[2], &seq, sizeof(seq));
 }

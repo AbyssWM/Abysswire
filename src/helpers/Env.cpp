@@ -23,7 +23,7 @@ bool Abysswire::Env::envEnabled(const std::string& env) {
 
 bool Abysswire::Env::isTrace() {
     if (!g_traceCached) {
-        g_trace       = envEnabled("HW_TRACE");
+        g_trace       = envEnabled("AW_TRACE");
         g_traceCached = true;
     }
 

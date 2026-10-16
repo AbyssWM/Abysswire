@@ -11,17 +11,17 @@
 using namespace Abysswire;
 
 TEST(FFI, MapsKnownMagicTypesToExpectedFfiTypes) {
-    EXPECT_EQ(FFI::ffiTypeFrom(HW_MESSAGE_MAGIC_TYPE_UINT), &ffi_type_uint32);
-    EXPECT_EQ(FFI::ffiTypeFrom(HW_MESSAGE_MAGIC_TYPE_OBJECT), &ffi_type_uint32);
-    EXPECT_EQ(FFI::ffiTypeFrom(HW_MESSAGE_MAGIC_TYPE_SEQ), &ffi_type_uint32);
+    EXPECT_EQ(FFI::ffiTypeFrom(AW_MESSAGE_MAGIC_TYPE_UINT), &ffi_type_uint32);
+    EXPECT_EQ(FFI::ffiTypeFrom(AW_MESSAGE_MAGIC_TYPE_OBJECT), &ffi_type_uint32);
+    EXPECT_EQ(FFI::ffiTypeFrom(AW_MESSAGE_MAGIC_TYPE_SEQ), &ffi_type_uint32);
 
-    EXPECT_EQ(FFI::ffiTypeFrom(HW_MESSAGE_MAGIC_TYPE_INT), &ffi_type_sint32);
-    EXPECT_EQ(FFI::ffiTypeFrom(HW_MESSAGE_MAGIC_TYPE_FD), &ffi_type_sint32);
+    EXPECT_EQ(FFI::ffiTypeFrom(AW_MESSAGE_MAGIC_TYPE_INT), &ffi_type_sint32);
+    EXPECT_EQ(FFI::ffiTypeFrom(AW_MESSAGE_MAGIC_TYPE_FD), &ffi_type_sint32);
 
-    EXPECT_EQ(FFI::ffiTypeFrom(HW_MESSAGE_MAGIC_TYPE_F32), &ffi_type_float);
+    EXPECT_EQ(FFI::ffiTypeFrom(AW_MESSAGE_MAGIC_TYPE_F32), &ffi_type_float);
 
-    EXPECT_EQ(FFI::ffiTypeFrom(HW_MESSAGE_MAGIC_TYPE_VARCHAR), &ffi_type_pointer);
-    EXPECT_EQ(FFI::ffiTypeFrom(HW_MESSAGE_MAGIC_TYPE_ARRAY), &ffi_type_pointer);
+    EXPECT_EQ(FFI::ffiTypeFrom(AW_MESSAGE_MAGIC_TYPE_VARCHAR), &ffi_type_pointer);
+    EXPECT_EQ(FFI::ffiTypeFrom(AW_MESSAGE_MAGIC_TYPE_ARRAY), &ffi_type_pointer);
 }
 
 TEST(FFI, UnknownMagicReturnsNull) {
@@ -29,7 +29,7 @@ TEST(FFI, UnknownMagicReturnsNull) {
 }
 
 TEST(Env, EnvEnabledFollowsVariableContents) {
-    constexpr const char* name = "HW_TEST_ENV_ENABLED";
+    constexpr const char* name = "AW_TEST_ENV_ENABLED";
 
     unsetenv(name);
     EXPECT_FALSE(Env::envEnabled(name));
@@ -47,7 +47,7 @@ TEST(Env, EnvEnabledFollowsVariableContents) {
 }
 
 TEST(Env, TraceCacheCanBeResetForDeterministicTests) {
-    constexpr const char* traceName = "HW_TRACE";
+    constexpr const char* traceName = "AW_TRACE";
 
     unsetenv(traceName);
     Env::resetTraceCache();

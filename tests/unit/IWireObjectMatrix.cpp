@@ -138,7 +138,7 @@ TEST(IWireObjectMatrix, CallFailsForUnsupportedArrayElementType) {
     auto obj          = makeObject();
     obj->m_id         = 12;
     obj->m_methodsOut = {
-        SMethod{.idx = 0, .params = {HW_MESSAGE_MAGIC_TYPE_ARRAY, HW_MESSAGE_MAGIC_TYPE_OBJECT_ID}, .returnsType = "", .since = 0},
+        SMethod{.idx = 0, .params = {AW_MESSAGE_MAGIC_TYPE_ARRAY, AW_MESSAGE_MAGIC_TYPE_OBJECT_ID}, .returnsType = "", .since = 0},
     };
 
     uint32_t dummy = 1;
@@ -157,14 +157,14 @@ TEST(IWireObjectMatrix, CallMarksObjectDestroyedWhenDestructorMethodIsCalled) {
     EXPECT_EQ(obj->call(0), 0u);
     EXPECT_TRUE(obj->m_destroyed);
     ASSERT_FALSE(obj->m_lastSentData.empty());
-    EXPECT_EQ(obj->m_lastSentData[0], HW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE);
+    EXPECT_EQ(obj->m_lastSentData[0], AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE);
 }
 
 TEST(IWireObjectMatrix, CalledRejectsInvalidMethodIndex) {
     auto obj  = makeObject();
     obj->m_id = 91;
 
-    const std::array<uint8_t, 1> data = {HW_MESSAGE_MAGIC_END};
+    const std::array<uint8_t, 1> data = {AW_MESSAGE_MAGIC_END};
     obj->called(0, std::span<const uint8_t>{data.data(), data.size()}, {});
 
     EXPECT_NE(obj->m_lastErrorMsg.find("invalid method"), std::string::npos);
@@ -179,7 +179,7 @@ TEST(IWireObjectMatrix, CalledRejectsMethodSinceNewerThanObjectVersion) {
     };
     obj->listen(0, fnToVoid(&onNoop));
 
-    const std::array<uint8_t, 1> data = {HW_MESSAGE_MAGIC_END};
+    const std::array<uint8_t, 1> data = {AW_MESSAGE_MAGIC_END};
     obj->called(0, std::span<const uint8_t>{data.data(), data.size()}, {});
 
     EXPECT_NE(obj->m_lastErrorMsg.find("since"), std::string::npos);
@@ -189,12 +189,12 @@ TEST(IWireObjectMatrix, CalledRejectsTypeMismatchBetweenSpecAndWire) {
     auto obj         = makeObject();
     obj->m_id        = 73;
     obj->m_methodsIn = {
-        SMethod{.idx = 0, .params = {HW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
+        SMethod{.idx = 0, .params = {AW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
     };
     obj->listen(0, fnToVoid(&onNoop));
 
     const std::array<uint8_t, 6> badData = {
-        HW_MESSAGE_MAGIC_TYPE_INT, 0, 0, 0, 0, HW_MESSAGE_MAGIC_END,
+        AW_MESSAGE_MAGIC_TYPE_INT, 0, 0, 0, 0, AW_MESSAGE_MAGIC_END,
     };
 
     obj->called(0, std::span<const uint8_t>{badData.data(), badData.size()}, {});
@@ -206,15 +206,15 @@ TEST(IWireObjectMatrix, CalledRejectsArrayWireTypeMismatch) {
     auto obj         = makeObject();
     obj->m_id        = 12;
     obj->m_methodsIn = {
-        SMethod{.idx = 0, .params = {HW_MESSAGE_MAGIC_TYPE_ARRAY, HW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
+        SMethod{.idx = 0, .params = {AW_MESSAGE_MAGIC_TYPE_ARRAY, AW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
     };
     obj->listen(0, fnToVoid(&onNoop));
 
     const std::array<uint8_t, 4> badData = {
-        HW_MESSAGE_MAGIC_TYPE_ARRAY,
-        HW_MESSAGE_MAGIC_TYPE_INT,
+        AW_MESSAGE_MAGIC_TYPE_ARRAY,
+        AW_MESSAGE_MAGIC_TYPE_INT,
         0x00,
-        HW_MESSAGE_MAGIC_END,
+        AW_MESSAGE_MAGIC_END,
     };
 
     obj->called(0, std::span<const uint8_t>{badData.data(), badData.size()}, {});
@@ -226,7 +226,7 @@ TEST(IWireObjectMatrix, CalledRejectsOversizedArrayPayload) {
     auto obj         = makeObject();
     obj->m_id        = 88;
     obj->m_methodsIn = {
-        SMethod{.idx = 0, .params = {HW_MESSAGE_MAGIC_TYPE_ARRAY, HW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
+        SMethod{.idx = 0, .params = {AW_MESSAGE_MAGIC_TYPE_ARRAY, AW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
     };
     obj->listen(0, fnToVoid(&onNoop));
 
@@ -234,11 +234,11 @@ TEST(IWireObjectMatrix, CalledRejectsOversizedArrayPayload) {
     auto                 lenVarInt = parser.encodeVarInt(10001);
 
     std::vector<uint8_t> data = {
-        HW_MESSAGE_MAGIC_TYPE_ARRAY,
-        HW_MESSAGE_MAGIC_TYPE_UINT,
+        AW_MESSAGE_MAGIC_TYPE_ARRAY,
+        AW_MESSAGE_MAGIC_TYPE_UINT,
     };
     data.insert(data.end(), lenVarInt.begin(), lenVarInt.end());
-    data.push_back(HW_MESSAGE_MAGIC_END);
+    data.push_back(AW_MESSAGE_MAGIC_END);
 
     obj->called(0, std::span<const uint8_t>{data.data(), data.size()}, {});
 
@@ -249,11 +249,11 @@ TEST(IWireObjectMatrix, CalledRejectsObjectIdMagicType) {
     auto obj         = makeObject();
     obj->m_id        = 19;
     obj->m_methodsIn = {
-        SMethod{.idx = 0, .params = {HW_MESSAGE_MAGIC_TYPE_OBJECT_ID}, .returnsType = "", .since = 0},
+        SMethod{.idx = 0, .params = {AW_MESSAGE_MAGIC_TYPE_OBJECT_ID}, .returnsType = "", .since = 0},
     };
     obj->listen(0, fnToVoid(&onNoop));
 
-    const std::array<uint8_t, 1> data = {HW_MESSAGE_MAGIC_TYPE_OBJECT_ID};
+    const std::array<uint8_t, 1> data = {AW_MESSAGE_MAGIC_TYPE_OBJECT_ID};
     obj->called(0, std::span<const uint8_t>{data.data(), data.size()}, {});
 
     EXPECT_NE(obj->m_lastErrorMsg.find("object type is not impld"), std::string::npos);
@@ -266,7 +266,7 @@ TEST(IWireObjectMatrix, CalledMarksDestroyedForDestructorWithoutListener) {
         SMethod{.idx = 0, .params = {}, .returnsType = "", .since = 0, .isDestructor = true},
     };
 
-    const std::array<uint8_t, 1> data = {HW_MESSAGE_MAGIC_END};
+    const std::array<uint8_t, 1> data = {AW_MESSAGE_MAGIC_END};
     obj->called(0, std::span<const uint8_t>{data.data(), data.size()}, {});
 
     EXPECT_TRUE(obj->m_destroyed);
@@ -282,7 +282,7 @@ TEST(IWireObjectMatrix, CalledMarksDestroyedForDestructorWithListener) {
 
     g_destructorListenerCalls = 0;
 
-    const std::array<uint8_t, 1> data = {HW_MESSAGE_MAGIC_END};
+    const std::array<uint8_t, 1> data = {AW_MESSAGE_MAGIC_END};
     obj->called(0, std::span<const uint8_t>{data.data(), data.size()}, {});
 
     EXPECT_EQ(g_destructorListenerCalls, 1);

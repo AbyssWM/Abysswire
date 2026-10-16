@@ -58,7 +58,7 @@ TEST(MessageParserMatrix, ServerParserRejectsMalformedBindProtocol) {
     auto                    serverClient = makeServerClient();
 
     SSocketRawParsedMessage raw = {
-        .data = {HW_MESSAGE_TYPE_BIND_PROTOCOL, HW_MESSAGE_MAGIC_END},
+        .data = {AW_MESSAGE_TYPE_BIND_PROTOCOL, AW_MESSAGE_MAGIC_END},
     };
 
     EXPECT_EQ(parser.handleMessage(raw, serverClient), MESSAGE_PARSED_ERROR);

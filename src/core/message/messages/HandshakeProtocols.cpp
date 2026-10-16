@@ -10,16 +10,16 @@
 using namespace Abysswire;
 
 CHandshakeProtocolsMessage::CHandshakeProtocolsMessage(const std::vector<uint8_t>& data, size_t offset) {
-    m_type = HW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS;
+    m_type = AW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS;
 
     try {
-        if (data.at(offset + 0) != HW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS)
+        if (data.at(offset + 0) != AW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS)
             return;
 
-        if (data.at(offset + 1) != HW_MESSAGE_MAGIC_TYPE_ARRAY)
+        if (data.at(offset + 1) != AW_MESSAGE_MAGIC_TYPE_ARRAY)
             return;
 
-        if (data.at(offset + 2) != HW_MESSAGE_MAGIC_TYPE_VARCHAR)
+        if (data.at(offset + 2) != AW_MESSAGE_MAGIC_TYPE_VARCHAR)
             return;
 
         size_t needle = 3;
@@ -41,7 +41,7 @@ CHandshakeProtocolsMessage::CHandshakeProtocolsMessage(const std::vector<uint8_t
             needle += strLen + strLenLen;
         }
 
-        if (data.at(offset + needle) != HW_MESSAGE_MAGIC_END)
+        if (data.at(offset + needle) != AW_MESSAGE_MAGIC_END)
             return;
 
         m_len = needle + 1;
@@ -53,12 +53,12 @@ CHandshakeProtocolsMessage::CHandshakeProtocolsMessage(const std::vector<uint8_t
 }
 
 CHandshakeProtocolsMessage::CHandshakeProtocolsMessage(const std::vector<std::string>& protocols) {
-    m_type = HW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS;
+    m_type = AW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS;
 
     m_data = {
-        HW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS,
-        HW_MESSAGE_MAGIC_TYPE_ARRAY,
-        HW_MESSAGE_MAGIC_TYPE_VARCHAR,
+        AW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS,
+        AW_MESSAGE_MAGIC_TYPE_ARRAY,
+        AW_MESSAGE_MAGIC_TYPE_VARCHAR,
     };
 
     { const auto& r_ = g_messageParser->encodeVarInt(protocols.size()); m_data.insert(m_data.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
@@ -68,5 +68,5 @@ CHandshakeProtocolsMessage::CHandshakeProtocolsMessage(const std::vector<std::st
         { const auto& r_ = p; m_data.insert(m_data.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
     }
 
-    m_data.emplace_back(HW_MESSAGE_MAGIC_END);
+    m_data.emplace_back(AW_MESSAGE_MAGIC_END);
 }

@@ -10,16 +10,16 @@
 using namespace Abysswire;
 
 CHandshakeBeginMessage::CHandshakeBeginMessage(const std::vector<uint8_t>& data, size_t offset) {
-    m_type = HW_MESSAGE_TYPE_HANDSHAKE_BEGIN;
+    m_type = AW_MESSAGE_TYPE_HANDSHAKE_BEGIN;
 
     try {
-        if (data.at(offset + 0) != HW_MESSAGE_TYPE_HANDSHAKE_BEGIN)
+        if (data.at(offset + 0) != AW_MESSAGE_TYPE_HANDSHAKE_BEGIN)
             return;
 
-        if (data.at(offset + 1) != HW_MESSAGE_MAGIC_TYPE_ARRAY)
+        if (data.at(offset + 1) != AW_MESSAGE_MAGIC_TYPE_ARRAY)
             return;
 
-        if (data.at(offset + 2) != HW_MESSAGE_MAGIC_TYPE_UINT)
+        if (data.at(offset + 2) != AW_MESSAGE_MAGIC_TYPE_UINT)
             return;
 
         size_t needle = 3;
@@ -40,7 +40,7 @@ CHandshakeBeginMessage::CHandshakeBeginMessage(const std::vector<uint8_t>& data,
 
         needle += (nVers * sizeof(uint32_t));
 
-        if (data.at(offset + needle) != HW_MESSAGE_MAGIC_END)
+        if (data.at(offset + needle) != AW_MESSAGE_MAGIC_END)
             return;
 
         m_len = needle + 1;
@@ -52,14 +52,14 @@ CHandshakeBeginMessage::CHandshakeBeginMessage(const std::vector<uint8_t>& data,
 }
 
 CHandshakeBeginMessage::CHandshakeBeginMessage(const std::vector<uint32_t>& versions) {
-    m_type = HW_MESSAGE_TYPE_HANDSHAKE_BEGIN;
+    m_type = AW_MESSAGE_TYPE_HANDSHAKE_BEGIN;
 
     m_data.reserve(8 + (versions.size() * 4));
 
     m_data = {
-        HW_MESSAGE_TYPE_HANDSHAKE_BEGIN,
-        HW_MESSAGE_MAGIC_TYPE_ARRAY,
-        HW_MESSAGE_MAGIC_TYPE_UINT,
+        AW_MESSAGE_TYPE_HANDSHAKE_BEGIN,
+        AW_MESSAGE_MAGIC_TYPE_ARRAY,
+        AW_MESSAGE_MAGIC_TYPE_UINT,
     };
 
     { const auto& r_ = g_messageParser->encodeVarInt(versions.size()); m_data.insert(m_data.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
@@ -72,5 +72,5 @@ CHandshakeBeginMessage::CHandshakeBeginMessage(const std::vector<uint32_t>& vers
         *rc<uint32_t*>(&m_data.at(HEAD_SIZE + (i * 4))) = versions.at(i);
     }
 
-    m_data.emplace_back(HW_MESSAGE_MAGIC_END);
+    m_data.emplace_back(AW_MESSAGE_MAGIC_END);
 }

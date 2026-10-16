@@ -70,7 +70,7 @@ namespace {
         auto* io = msg->msg_iov;
         if (io && io->iov_len > 0) {
             auto* bytes = static_cast<uint8_t*>(io->iov_base);
-            bytes[0]    = HW_MESSAGE_TYPE_SUP;
+            bytes[0]    = AW_MESSAGE_TYPE_SUP;
         }
 
         auto* cmsg = CMSG_FIRSTHDR(msg);

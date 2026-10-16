@@ -23,7 +23,7 @@ Content is split into parameters, which are essentially variables. These are def
 
 ### Example wire message
 
-An example, using `HW_MESSAGE_TYPE_SUP`, which takes a str:
+An example, using `AW_MESSAGE_TYPE_SUP`, which takes a str:
 
 ```
 0x01 0x20 0x03 0x56 0x41 0x58 0x00

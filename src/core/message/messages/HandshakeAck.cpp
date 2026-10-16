@@ -10,18 +10,18 @@
 using namespace Abysswire;
 
 CHandshakeAckMessage::CHandshakeAckMessage(const std::vector<uint8_t>& data, size_t offset) {
-    m_type = HW_MESSAGE_TYPE_HANDSHAKE_ACK;
+    m_type = AW_MESSAGE_TYPE_HANDSHAKE_ACK;
 
     try {
-        if (data.at(offset + 0) != HW_MESSAGE_TYPE_HANDSHAKE_ACK)
+        if (data.at(offset + 0) != AW_MESSAGE_TYPE_HANDSHAKE_ACK)
             return;
 
-        if (data.at(offset + 1) != HW_MESSAGE_MAGIC_TYPE_UINT)
+        if (data.at(offset + 1) != AW_MESSAGE_MAGIC_TYPE_UINT)
             return;
 
         size_t needle = 2;
 
-        if (data.at(offset + needle + 4) != HW_MESSAGE_MAGIC_END)
+        if (data.at(offset + needle + 4) != AW_MESSAGE_MAGIC_END)
             return;
 
         if ((data.size() - offset - needle) < sizeof(m_version))
@@ -39,18 +39,18 @@ CHandshakeAckMessage::CHandshakeAckMessage(const std::vector<uint8_t>& data, siz
 }
 
 CHandshakeAckMessage::CHandshakeAckMessage(uint32_t version) {
-    m_type = HW_MESSAGE_TYPE_HANDSHAKE_ACK;
+    m_type = AW_MESSAGE_TYPE_HANDSHAKE_ACK;
 
     m_data.reserve(7);
 
     m_data = {
-        HW_MESSAGE_TYPE_HANDSHAKE_ACK,
-        HW_MESSAGE_MAGIC_TYPE_UINT,
+        AW_MESSAGE_TYPE_HANDSHAKE_ACK,
+        AW_MESSAGE_MAGIC_TYPE_UINT,
     };
 
     m_data.resize(6);
 
     std::memcpy(&m_data[2], &version, sizeof(version));
 
-    m_data.emplace_back(HW_MESSAGE_MAGIC_END);
+    m_data.emplace_back(AW_MESSAGE_MAGIC_END);
 }

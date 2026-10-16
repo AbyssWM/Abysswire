@@ -12,7 +12,7 @@
 #include <abysswire/core/types/MessageMagic.hpp>
 
 struct SRequestArgument {
-    Abysswire::eMessageMagic magic = Abysswire::HW_MESSAGE_MAGIC_END, arrType = Abysswire::HW_MESSAGE_MAGIC_END;
+    Abysswire::eMessageMagic magic = Abysswire::AW_MESSAGE_MAGIC_END, arrType = Abysswire::AW_MESSAGE_MAGIC_END;
     std::string             interface;
     std::string             name;
     bool                    allowNull = false;
@@ -87,60 +87,60 @@ static std::string uppercase(std::string str) {
 
 static Abysswire::eMessageMagic strToMagic(const std::string_view& sv) {
     if (sv == "varchar")
-        return Abysswire::HW_MESSAGE_MAGIC_TYPE_VARCHAR;
+        return Abysswire::AW_MESSAGE_MAGIC_TYPE_VARCHAR;
     if (sv == "uint")
-        return Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT;
+        return Abysswire::AW_MESSAGE_MAGIC_TYPE_UINT;
     if (sv == "enum")
-        return Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT;
+        return Abysswire::AW_MESSAGE_MAGIC_TYPE_UINT;
     if (sv == "int")
-        return Abysswire::HW_MESSAGE_MAGIC_TYPE_INT;
+        return Abysswire::AW_MESSAGE_MAGIC_TYPE_INT;
     if (sv == "f32")
-        return Abysswire::HW_MESSAGE_MAGIC_TYPE_F32;
+        return Abysswire::AW_MESSAGE_MAGIC_TYPE_F32;
     if (sv == "fd")
-        return Abysswire::HW_MESSAGE_MAGIC_TYPE_FD;
+        return Abysswire::AW_MESSAGE_MAGIC_TYPE_FD;
     // if (sv == "object")
-    //     return Abysswire::HW_MESSAGE_MAGIC_TYPE_OBJECT_ID;
+    //     return Abysswire::AW_MESSAGE_MAGIC_TYPE_OBJECT_ID;
     if (sv.starts_with("array "))
-        return Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY;
-    return Abysswire::HW_MESSAGE_MAGIC_END;
+        return Abysswire::AW_MESSAGE_MAGIC_TYPE_ARRAY;
+    return Abysswire::AW_MESSAGE_MAGIC_END;
 }
 
-static std::string magicToString(Abysswire::eMessageMagic m, Abysswire::eMessageMagic arrType = Abysswire::HW_MESSAGE_MAGIC_END) {
+static std::string magicToString(Abysswire::eMessageMagic m, Abysswire::eMessageMagic arrType = Abysswire::AW_MESSAGE_MAGIC_END) {
     switch (m) {
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_VARCHAR: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_VARCHAR";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_INT: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_INT";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_F32: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_F32";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_FD: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_FD";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY: return "Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY, " + magicToString(arrType);
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_VARCHAR: return "Abysswire::AW_MESSAGE_MAGIC_TYPE_VARCHAR";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_UINT: return "Abysswire::AW_MESSAGE_MAGIC_TYPE_UINT";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_INT: return "Abysswire::AW_MESSAGE_MAGIC_TYPE_INT";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_F32: return "Abysswire::AW_MESSAGE_MAGIC_TYPE_F32";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_FD: return "Abysswire::AW_MESSAGE_MAGIC_TYPE_FD";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_ARRAY: return "Abysswire::AW_MESSAGE_MAGIC_TYPE_ARRAY, " + magicToString(arrType);
         default: return "";
     }
 }
 
 static std::string argToC(Abysswire::eMessageMagic m) {
     switch (m) {
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_VARCHAR: return "const char*";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT: return "uint32_t";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_INT: return "int32_t";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_F32: return "float";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_FD: return "int";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_VARCHAR: return "const char*";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_UINT: return "uint32_t";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_INT: return "int32_t";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_F32: return "float";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_FD: return "int";
         default: return "";
     }
 }
 
 static std::string argToC(const SRequestArgument& arg) {
     switch (arg.magic) {
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_VARCHAR: return "const char*";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_UINT: {
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_VARCHAR: return "const char*";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_UINT: {
             if (!arg.isEnum)
                 return "uint32_t";
 
             return camelize(PROTO_DATA.nameOriginal + "_" + arg.interface);
         }
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_INT: return "int32_t";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_F32: return "float";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_FD: return "int";
-        case Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY: return "const std::vector<" + argToC(arg.arrType) + ">&";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_INT: return "int32_t";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_F32: return "float";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_FD: return "int";
+        case Abysswire::AW_MESSAGE_MAGIC_TYPE_ARRAY: return "const std::vector<" + argToC(arg.arrType) + ">&";
         default: return "";
     }
 }
@@ -160,7 +160,7 @@ static std::string argsToC(const std::vector<SRequestArgument>& args, bool noNam
     }
 
     for (const auto& m : args) {
-        if (m.arrType != Abysswire::HW_MESSAGE_MAGIC_END && pureC) {
+        if (m.arrType != Abysswire::AW_MESSAGE_MAGIC_END && pureC) {
             if (noTypes)
                 cstr += std::format("{}.data(), (uint32_t){}.size(), ", m.name, m.name);
             else {
@@ -169,7 +169,7 @@ static std::string argsToC(const std::vector<SRequestArgument>& args, bool noNam
                 else
                     cstr += std::format("{}* {}, uint32_t {}, ", argToC(m.arrType), m.name, m.name + "_len");
             }
-        } else if (m.arrType != Abysswire::HW_MESSAGE_MAGIC_END && unC) {
+        } else if (m.arrType != Abysswire::AW_MESSAGE_MAGIC_END && unC) {
             if (noTypes)
                 cstr += std::format("std::vector<{}>{{ {}, {} + {} }}, ", argToC(m.arrType), m.name, m.name, m.name + "_len");
             else {
@@ -245,7 +245,7 @@ static bool scanProtocol(const pugi::xml_document& doc) {
                         .name      = param.attribute("name").as_string(),
                         .allowNull = param.attribute("allow_null").as_bool(),
                     });
-                    if (a.magic == Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY)
+                    if (a.magic == Abysswire::AW_MESSAGE_MAGIC_TYPE_ARRAY)
                         a.arrType = strToMagic(std::string{param.attribute("type").as_string()}.substr(6));
                 }
 
@@ -279,7 +279,7 @@ static bool scanProtocol(const pugi::xml_document& doc) {
                         .allowNull = param.attribute("allow_null").as_bool(),
                         .isEnum    = param.attribute("type").as_string() == std::string_view{"enum"},
                     });
-                    if (a.magic == Abysswire::HW_MESSAGE_MAGIC_TYPE_ARRAY)
+                    if (a.magic == Abysswire::AW_MESSAGE_MAGIC_TYPE_ARRAY)
                         a.arrType = strToMagic(std::string{param.attribute("type").as_string()}.substr(6));
                     continue;
                 }

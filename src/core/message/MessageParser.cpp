@@ -64,10 +64,10 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
     auto& data = raw.data;
 
     switch (sc<eMessageType>(data.at(off))) {
-        case HW_MESSAGE_TYPE_SUP: {
+        case AW_MESSAGE_TYPE_SUP: {
             auto msg = CHelloMessage(data, off);
             if (!msg.m_len) {
-                Debug::log(ERR, "client at fd {} core protocol error: malformed message recvd (HW_MESSAGE_TYPE_SUP)", client->m_fd.get());
+                Debug::log(ERR, "client at fd {} core protocol error: malformed message recvd (AW_MESSAGE_TYPE_SUP)", client->m_fd.get());
                 return 0;
             }
             TRACE(Debug::log(TRACE, "[{} @ {:.3f}] <- {}", client->m_fd.get(), steadyMillis(), msg.parseData()));
@@ -75,15 +75,15 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
             client->sendMessage(CHandshakeBeginMessage(std::vector<uint32_t>{ABYSSWIRE_PROTOCOL_VER}));
             return msg.m_len;
         }
-        case HW_MESSAGE_TYPE_HANDSHAKE_BEGIN: {
+        case AW_MESSAGE_TYPE_HANDSHAKE_BEGIN: {
             client->m_error = true;
             Debug::log(ERR, "client at fd {} core protocol error: invalid message recvd (HANDSHAKE_BEGIN)", client->m_fd.get());
             return 0;
         }
-        case HW_MESSAGE_TYPE_HANDSHAKE_ACK: {
+        case AW_MESSAGE_TYPE_HANDSHAKE_ACK: {
             auto msg = CHandshakeAckMessage(data, off);
             if (!msg.m_len) {
-                Debug::log(ERR, "client at fd {} core protocol error: malformed message recvd (HW_MESSAGE_HANDSHAKE_ACK)", client->m_fd.get());
+                Debug::log(ERR, "client at fd {} core protocol error: malformed message recvd (AW_MESSAGE_HANDSHAKE_ACK)", client->m_fd.get());
                 return 0;
             }
             client->m_version = msg.m_version;
@@ -99,15 +99,15 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
 
             return msg.m_len;
         }
-        case HW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS: {
+        case AW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS: {
             client->m_error = true;
-            Debug::log(ERR, "client at fd {} core protocol error: invalid message recvd (HW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS)", client->m_fd.get());
+            Debug::log(ERR, "client at fd {} core protocol error: invalid message recvd (AW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS)", client->m_fd.get());
             return 0;
         }
-        case HW_MESSAGE_TYPE_BIND_PROTOCOL: {
+        case AW_MESSAGE_TYPE_BIND_PROTOCOL: {
             auto msg = CBindProtocolMessage(data, off);
             if (!msg.m_len) {
-                Debug::log(ERR, "client at fd {} core protocol error: malformed message recvd (HW_MESSAGE_TYPE_BIND_PROTOCOL)", client->m_fd.get());
+                Debug::log(ERR, "client at fd {} core protocol error: malformed message recvd (AW_MESSAGE_TYPE_BIND_PROTOCOL)", client->m_fd.get());
                 return 0;
             }
 
@@ -117,15 +117,15 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
 
             return msg.m_len;
         }
-        case HW_MESSAGE_TYPE_NEW_OBJECT: {
+        case AW_MESSAGE_TYPE_NEW_OBJECT: {
             client->m_error = true;
-            Debug::log(ERR, "client at fd {} core protocol error: invalid message recvd (HW_MESSAGE_TYPE_NEW_OBJECT)", client->m_fd.get());
+            Debug::log(ERR, "client at fd {} core protocol error: invalid message recvd (AW_MESSAGE_TYPE_NEW_OBJECT)", client->m_fd.get());
             return 0;
         }
-        case HW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE: {
+        case AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE: {
             auto msg = CGenericProtocolMessage(data, raw.fds, off);
             if (!msg.m_len) {
-                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (HW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE)", client->m_fd.get());
+                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE)", client->m_fd.get());
                 return 0;
             }
 
@@ -135,15 +135,15 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
 
             return msg.m_len;
         }
-        case HW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR: {
+        case AW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR: {
             client->m_error = true;
-            Debug::log(ERR, "client at fd {} core protocol error: invalid message recvd (HW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR)", client->m_fd.get());
+            Debug::log(ERR, "client at fd {} core protocol error: invalid message recvd (AW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR)", client->m_fd.get());
             return 0;
         }
-        case HW_MESSAGE_TYPE_ROUNDTRIP_REQUEST: {
+        case AW_MESSAGE_TYPE_ROUNDTRIP_REQUEST: {
             auto msg = CRoundtripRequestMessage(data, off);
             if (!msg.m_len) {
-                Debug::log(ERR, "client at fd {} core protocol error: malformed message recvd (HW_MESSAGE_TYPE_ROUNDTRIP_REQUEST)", client->m_fd.get());
+                Debug::log(ERR, "client at fd {} core protocol error: malformed message recvd (AW_MESSAGE_TYPE_ROUNDTRIP_REQUEST)", client->m_fd.get());
                 return 0;
             }
 
@@ -153,12 +153,12 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
 
             return msg.m_len;
         }
-        case HW_MESSAGE_TYPE_ROUNDTRIP_DONE: {
+        case AW_MESSAGE_TYPE_ROUNDTRIP_DONE: {
             client->m_error = true;
-            Debug::log(ERR, "client at fd {} core protocol error: invalid message recvd (HW_MESSAGE_TYPE_ROUNDTRIP_DONE)", client->m_fd.get());
+            Debug::log(ERR, "client at fd {} core protocol error: invalid message recvd (AW_MESSAGE_TYPE_ROUNDTRIP_DONE)", client->m_fd.get());
             return 0;
         }
-        case HW_MESSAGE_TYPE_INVALID: break;
+        case AW_MESSAGE_TYPE_INVALID: break;
     }
 
     Debug::log(ERR, "client at fd {} core protocol error: malformed message recvd (invalid type code)", client->m_fd.get());
@@ -171,15 +171,15 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
     auto& data = raw.data;
 
     switch (sc<eMessageType>(data.at(off))) {
-        case HW_MESSAGE_TYPE_SUP: {
+        case AW_MESSAGE_TYPE_SUP: {
             client->m_error = true;
-            Debug::log(ERR, "server at fd {} core protocol error: invalid message recvd (HW_MESSAGE_TYPE_SUP)", client->m_fd.get());
+            Debug::log(ERR, "server at fd {} core protocol error: invalid message recvd (AW_MESSAGE_TYPE_SUP)", client->m_fd.get());
             return 0;
         }
-        case HW_MESSAGE_TYPE_HANDSHAKE_BEGIN: {
+        case AW_MESSAGE_TYPE_HANDSHAKE_BEGIN: {
             auto msg = CHandshakeBeginMessage(data, off);
             if (!msg.m_len) {
-                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (HW_MESSAGE_TYPE_HANDSHAKE_BEGIN)", client->m_fd.get());
+                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (AW_MESSAGE_TYPE_HANDSHAKE_BEGIN)", client->m_fd.get());
                 return 0;
             }
 
@@ -195,15 +195,15 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
 
             return msg.m_len;
         }
-        case HW_MESSAGE_TYPE_HANDSHAKE_ACK: {
+        case AW_MESSAGE_TYPE_HANDSHAKE_ACK: {
             client->m_error = true;
-            Debug::log(ERR, "server at fd {} core protocol error: invalid message recvd (HW_MESSAGE_TYPE_HANDSHAKE_ACK)", client->m_fd.get());
+            Debug::log(ERR, "server at fd {} core protocol error: invalid message recvd (AW_MESSAGE_TYPE_HANDSHAKE_ACK)", client->m_fd.get());
             return 0;
         }
-        case HW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS: {
+        case AW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS: {
             auto msg = CHandshakeProtocolsMessage(data, off);
             if (!msg.m_len) {
-                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (HW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS)", client->m_fd.get());
+                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (AW_MESSAGE_TYPE_HANDSHAKE_PROTOCOLS)", client->m_fd.get());
                 return 0;
             }
 
@@ -213,15 +213,15 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
 
             return msg.m_len;
         }
-        case HW_MESSAGE_TYPE_BIND_PROTOCOL: {
+        case AW_MESSAGE_TYPE_BIND_PROTOCOL: {
             client->m_error = true;
-            Debug::log(ERR, "server at fd {} core protocol error: invalid message recvd (HW_MESSAGE_TYPE_BIND_PROTOCOL)", client->m_fd.get());
+            Debug::log(ERR, "server at fd {} core protocol error: invalid message recvd (AW_MESSAGE_TYPE_BIND_PROTOCOL)", client->m_fd.get());
             return 0;
         }
-        case HW_MESSAGE_TYPE_NEW_OBJECT: {
+        case AW_MESSAGE_TYPE_NEW_OBJECT: {
             auto msg = CNewObjectMessage(data, off);
             if (!msg.m_len) {
-                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (HW_MESSAGE_TYPE_NEW_OBJECT)", client->m_fd.get());
+                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (AW_MESSAGE_TYPE_NEW_OBJECT)", client->m_fd.get());
                 return 0;
             }
 
@@ -231,11 +231,11 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
 
             return msg.m_len;
         }
-        case HW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE: {
+        case AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE: {
             auto msg = CGenericProtocolMessage(data, raw.fds, off);
 
             if (!msg.m_len) {
-                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (HW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE)", client->m_fd.get());
+                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE)", client->m_fd.get());
                 return 0;
             }
 
@@ -245,22 +245,22 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
 
             return msg.m_len;
         }
-        case HW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR: {
+        case AW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR: {
             auto msg = CFatalErrorMessage(data, off);
 
             Debug::log(ERR, "fatal protocol error: object {} error {}: {}", msg.m_objectId, msg.m_errorId, msg.m_errorMsg);
             client->m_error = true;
             return msg.m_len;
         }
-        case HW_MESSAGE_TYPE_ROUNDTRIP_REQUEST: {
+        case AW_MESSAGE_TYPE_ROUNDTRIP_REQUEST: {
             client->m_error = true;
-            Debug::log(ERR, "server at fd {} core protocol error: invalid message recvd (HW_MESSAGE_TYPE_ROUNDTRIP_REQUEST)", client->m_fd.get());
+            Debug::log(ERR, "server at fd {} core protocol error: invalid message recvd (AW_MESSAGE_TYPE_ROUNDTRIP_REQUEST)", client->m_fd.get());
             return 0;
         }
-        case HW_MESSAGE_TYPE_ROUNDTRIP_DONE: {
+        case AW_MESSAGE_TYPE_ROUNDTRIP_DONE: {
             auto msg = CRoundtripDoneMessage(data, off);
             if (!msg.m_len) {
-                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (HW_MESSAGE_TYPE_ROUNDTRIP_DONE)", client->m_fd.get());
+                Debug::log(ERR, "server at fd {} core protocol error: malformed message recvd (AW_MESSAGE_TYPE_ROUNDTRIP_DONE)", client->m_fd.get());
                 return 0;
             }
 
@@ -270,7 +270,7 @@ size_t CMessageParser::parseSingleMessage(SSocketRawParsedMessage& raw, size_t o
 
             return msg.m_len;
         }
-        case HW_MESSAGE_TYPE_INVALID: break;
+        case AW_MESSAGE_TYPE_INVALID: break;
     }
 
     Debug::log(ERR, "server at fd {} core protocol error: invalid message recvd (invalid type code)", client->m_fd.get());

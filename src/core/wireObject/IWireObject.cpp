@@ -81,13 +81,13 @@ uint32_t IWireObject::call(uint32_t id, ...) {
     // encode the message
     std::vector<uint8_t> data;
     std::vector<int>     fds;
-    data.emplace_back(HW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE);
-    data.emplace_back(HW_MESSAGE_MAGIC_TYPE_OBJECT);
+    data.emplace_back(AW_MESSAGE_TYPE_GENERIC_PROTOCOL_MESSAGE);
+    data.emplace_back(AW_MESSAGE_MAGIC_TYPE_OBJECT);
 
     data.resize(data.size() + 4);
     std::memcpy(&data[data.size() - 4], &m_id, sizeof(m_id));
 
-    data.emplace_back(HW_MESSAGE_MAGIC_TYPE_UINT);
+    data.emplace_back(AW_MESSAGE_MAGIC_TYPE_UINT);
 
     data.resize(data.size() + 4);
     std::memcpy(&data[data.size() - 4], &id, sizeof(id));
@@ -100,7 +100,7 @@ uint32_t IWireObject::call(uint32_t id, ...) {
             TRACE(Debug::log(TRACE, "[{} @ {:.3f}] -- call {}: returnsType has {}", selfClient->m_client->m_fd.get(), steadyMillis(), id, method.returnsType));
         }
 
-        data.emplace_back(HW_MESSAGE_MAGIC_TYPE_SEQ);
+        data.emplace_back(AW_MESSAGE_MAGIC_TYPE_SEQ);
 
         data.resize(data.size() + 4);
         auto     selfClient = reinterpretPointerCast<CClientObject>(m_self.lock());
@@ -111,49 +111,49 @@ uint32_t IWireObject::call(uint32_t id, ...) {
 
     for (size_t i = 0; i < params.size(); ++i) {
         switch (sc<eMessageMagic>(params.at(i))) {
-            case HW_MESSAGE_MAGIC_TYPE_UINT: {
-                data.emplace_back(HW_MESSAGE_MAGIC_TYPE_UINT);
+            case AW_MESSAGE_MAGIC_TYPE_UINT: {
+                data.emplace_back(AW_MESSAGE_MAGIC_TYPE_UINT);
                 data.resize(data.size() + 4);
                 uint32_t val = va_arg(va, uint32_t);
                 std::memcpy(&data[data.size() - 4], &val, sizeof(val));
                 break;
             }
 
-            case HW_MESSAGE_MAGIC_TYPE_INT: {
-                data.emplace_back(HW_MESSAGE_MAGIC_TYPE_INT);
+            case AW_MESSAGE_MAGIC_TYPE_INT: {
+                data.emplace_back(AW_MESSAGE_MAGIC_TYPE_INT);
                 data.resize(data.size() + 4);
                 int32_t val = va_arg(va, int32_t);
                 std::memcpy(&data[data.size() - 4], &val, sizeof(val));
                 break;
             }
 
-            case HW_MESSAGE_MAGIC_TYPE_OBJECT: {
-                data.emplace_back(HW_MESSAGE_MAGIC_TYPE_OBJECT);
+            case AW_MESSAGE_MAGIC_TYPE_OBJECT: {
+                data.emplace_back(AW_MESSAGE_MAGIC_TYPE_OBJECT);
                 data.resize(data.size() + 4);
                 uint32_t val = va_arg(va, uint32_t);
                 std::memcpy(&data[data.size() - 4], &val, sizeof(val));
                 break;
             }
 
-            case HW_MESSAGE_MAGIC_TYPE_F32: {
-                data.emplace_back(HW_MESSAGE_MAGIC_TYPE_F32);
+            case AW_MESSAGE_MAGIC_TYPE_F32: {
+                data.emplace_back(AW_MESSAGE_MAGIC_TYPE_F32);
                 data.resize(data.size() + 4);
                 float val = va_arg(va, double);
                 std::memcpy(&data[data.size() - 4], &val, sizeof(val));
                 break;
             }
 
-            case HW_MESSAGE_MAGIC_TYPE_VARCHAR: {
-                data.emplace_back(HW_MESSAGE_MAGIC_TYPE_VARCHAR);
+            case AW_MESSAGE_MAGIC_TYPE_VARCHAR: {
+                data.emplace_back(AW_MESSAGE_MAGIC_TYPE_VARCHAR);
                 auto str = va_arg(va, const char*);
                 { const auto& r_ = g_messageParser->encodeVarInt(std::string_view(str).size()); data.insert(data.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
                 { const auto& r_ = std::string_view(str); data.insert(data.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
                 break;
             }
 
-            case HW_MESSAGE_MAGIC_TYPE_ARRAY: {
+            case AW_MESSAGE_MAGIC_TYPE_ARRAY: {
                 const auto arrType = sc<eMessageMagic>(params.at(++i));
-                data.emplace_back(HW_MESSAGE_MAGIC_TYPE_ARRAY);
+                data.emplace_back(AW_MESSAGE_MAGIC_TYPE_ARRAY);
                 data.emplace_back(arrType);
 
                 auto arrayData = va_arg(va, void*);
@@ -161,10 +161,10 @@ uint32_t IWireObject::call(uint32_t id, ...) {
                 { const auto& r_ = g_messageParser->encodeVarInt(arrayLen); data.insert(data.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
 
                 switch (arrType) {
-                    case HW_MESSAGE_MAGIC_TYPE_UINT:
-                    case HW_MESSAGE_MAGIC_TYPE_INT:
-                    case HW_MESSAGE_MAGIC_TYPE_F32:
-                    case HW_MESSAGE_MAGIC_TYPE_OBJECT: {
+                    case AW_MESSAGE_MAGIC_TYPE_UINT:
+                    case AW_MESSAGE_MAGIC_TYPE_INT:
+                    case AW_MESSAGE_MAGIC_TYPE_F32:
+                    case AW_MESSAGE_MAGIC_TYPE_OBJECT: {
                         for (size_t j = 0; j < arrayLen; ++j) {
                             data.resize(data.size() + 4);
                             uint32_t val = rc<uint32_t*>(arrayData)[j];
@@ -172,13 +172,13 @@ uint32_t IWireObject::call(uint32_t id, ...) {
                         }
                         break;
                     }
-                    case HW_MESSAGE_MAGIC_TYPE_FD: {
+                    case AW_MESSAGE_MAGIC_TYPE_FD: {
                         for (size_t j = 0; j < arrayLen; ++j) {
                             fds.emplace_back(rc<int32_t*>(arrayData)[j]);
                         }
                         break;
                     }
-                    case HW_MESSAGE_MAGIC_TYPE_VARCHAR: {
+                    case AW_MESSAGE_MAGIC_TYPE_VARCHAR: {
                         for (size_t i = 0; i < arrayLen; ++i) {
                             const char* element = rc<const char**>(arrayData)[i];
                             { const auto& r_ = g_messageParser->encodeVarInt(std::string_view(element).size()); data.insert(data.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
@@ -196,8 +196,8 @@ uint32_t IWireObject::call(uint32_t id, ...) {
                 break;
             }
 
-            case HW_MESSAGE_MAGIC_TYPE_FD: {
-                data.emplace_back(HW_MESSAGE_MAGIC_TYPE_FD);
+            case AW_MESSAGE_MAGIC_TYPE_FD: {
+                data.emplace_back(AW_MESSAGE_MAGIC_TYPE_FD);
 
                 // add fd to our message
                 fds.emplace_back(va_arg(va, int32_t));
@@ -208,7 +208,7 @@ uint32_t IWireObject::call(uint32_t id, ...) {
         }
     }
 
-    data.emplace_back(HW_MESSAGE_MAGIC_END);
+    data.emplace_back(AW_MESSAGE_MAGIC_END);
 
     auto msg = CGenericProtocolMessage(std::move(data), std::move(fds));
 
@@ -262,7 +262,7 @@ void IWireObject::called(uint32_t id, const std::span<const uint8_t>& data, cons
     std::vector<uint8_t> params;
 
     if (!method.returnsType.empty())
-        params.emplace_back(HW_MESSAGE_MAGIC_TYPE_SEQ);
+        params.emplace_back(AW_MESSAGE_MAGIC_TYPE_SEQ);
 
     { const auto& r_ = method.params; params.insert(params.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
 
@@ -291,19 +291,19 @@ void IWireObject::called(uint32_t id, const std::span<const uint8_t>& data, cons
         ffiTypes.emplace_back(ffiType);
 
         switch (PARAM) {
-            case HW_MESSAGE_MAGIC_END: ++i; break; // BUG if this happens or malformed message
-            case HW_MESSAGE_MAGIC_TYPE_FD: dataI++; break;
-            case HW_MESSAGE_MAGIC_TYPE_UINT:
-            case HW_MESSAGE_MAGIC_TYPE_F32:
-            case HW_MESSAGE_MAGIC_TYPE_INT:
-            case HW_MESSAGE_MAGIC_TYPE_OBJECT:
-            case HW_MESSAGE_MAGIC_TYPE_SEQ: dataI += 5; break;
-            case HW_MESSAGE_MAGIC_TYPE_VARCHAR: {
+            case AW_MESSAGE_MAGIC_END: ++i; break; // BUG if this happens or malformed message
+            case AW_MESSAGE_MAGIC_TYPE_FD: dataI++; break;
+            case AW_MESSAGE_MAGIC_TYPE_UINT:
+            case AW_MESSAGE_MAGIC_TYPE_F32:
+            case AW_MESSAGE_MAGIC_TYPE_INT:
+            case AW_MESSAGE_MAGIC_TYPE_OBJECT:
+            case AW_MESSAGE_MAGIC_TYPE_SEQ: dataI += 5; break;
+            case AW_MESSAGE_MAGIC_TYPE_VARCHAR: {
                 auto [a, b] = g_messageParser->parseVarInt(std::span<const uint8_t>{&data[dataI + 1], data.size() - dataI});
                 dataI += a + b + 1;
                 break;
             }
-            case HW_MESSAGE_MAGIC_TYPE_ARRAY: {
+            case AW_MESSAGE_MAGIC_TYPE_ARRAY: {
                 const auto arrType  = sc<eMessageMagic>(params.at(++i));
                 const auto wireType = sc<eMessageMagic>(data[dataI + 1]);
 
@@ -326,18 +326,18 @@ void IWireObject::called(uint32_t id, const std::span<const uint8_t>& data, cons
                     return;
                 }
 
-                ffiTypes.emplace_back(FFI::ffiTypeFrom(HW_MESSAGE_MAGIC_TYPE_UINT /* length */));
+                ffiTypes.emplace_back(FFI::ffiTypeFrom(AW_MESSAGE_MAGIC_TYPE_UINT /* length */));
 
                 switch (arrType) {
-                    case HW_MESSAGE_MAGIC_TYPE_UINT:
-                    case HW_MESSAGE_MAGIC_TYPE_F32:
-                    case HW_MESSAGE_MAGIC_TYPE_INT:
-                    case HW_MESSAGE_MAGIC_TYPE_OBJECT:
-                    case HW_MESSAGE_MAGIC_TYPE_SEQ: {
+                    case AW_MESSAGE_MAGIC_TYPE_UINT:
+                    case AW_MESSAGE_MAGIC_TYPE_F32:
+                    case AW_MESSAGE_MAGIC_TYPE_INT:
+                    case AW_MESSAGE_MAGIC_TYPE_OBJECT:
+                    case AW_MESSAGE_MAGIC_TYPE_SEQ: {
                         arrMessageLen += 4 * arrLen;
                         break;
                     }
-                    case HW_MESSAGE_MAGIC_TYPE_VARCHAR: {
+                    case AW_MESSAGE_MAGIC_TYPE_VARCHAR: {
                         for (size_t j = 0; j < arrLen; ++j) {
                             if (dataI + arrMessageLen > data.size()) {
                                 const auto MSG = std::format("failed demarshaling array message");
@@ -350,7 +350,7 @@ void IWireObject::called(uint32_t id, const std::span<const uint8_t>& data, cons
                         }
                         break;
                     }
-                    case HW_MESSAGE_MAGIC_TYPE_FD: {
+                    case AW_MESSAGE_MAGIC_TYPE_FD: {
                         break;
                     }
                     default: {
@@ -364,7 +364,7 @@ void IWireObject::called(uint32_t id, const std::span<const uint8_t>& data, cons
                 dataI += arrMessageLen;
                 break;
             }
-            case HW_MESSAGE_MAGIC_TYPE_OBJECT_ID: {
+            case AW_MESSAGE_MAGIC_TYPE_OBJECT_ID: {
                 const auto MSG = std::format("object type is not impld");
                 Debug::log(ERR, "core protocol error: {}", MSG);
                 error(m_id, MSG);
@@ -404,42 +404,42 @@ void IWireObject::called(uint32_t id, const std::span<const uint8_t>& data, cons
         const auto PARAM = sc<eMessageMagic>(data[i]);
         // FIXME: add type checking
 
-        if (PARAM == HW_MESSAGE_MAGIC_END)
+        if (PARAM == AW_MESSAGE_MAGIC_END)
             break;
 
         switch (PARAM) {
-            case HW_MESSAGE_MAGIC_END: break;
-            case HW_MESSAGE_MAGIC_TYPE_UINT: {
+            case AW_MESSAGE_MAGIC_END: break;
+            case AW_MESSAGE_MAGIC_TYPE_UINT: {
                 buf = malloc(sizeof(uint32_t));
                 std::memcpy(buf, &data[i + 1], sizeof(uint32_t));
                 i += 4;
                 break;
             }
-            case HW_MESSAGE_MAGIC_TYPE_F32: {
+            case AW_MESSAGE_MAGIC_TYPE_F32: {
                 buf = malloc(sizeof(float));
                 std::memcpy(buf, &data[i + 1], sizeof(float));
                 i += 4;
                 break;
             }
-            case HW_MESSAGE_MAGIC_TYPE_INT: {
+            case AW_MESSAGE_MAGIC_TYPE_INT: {
                 buf = malloc(sizeof(int32_t));
                 std::memcpy(buf, &data[i + 1], sizeof(int32_t));
                 i += 4;
                 break;
             }
-            case HW_MESSAGE_MAGIC_TYPE_OBJECT: {
+            case AW_MESSAGE_MAGIC_TYPE_OBJECT: {
                 buf = malloc(sizeof(uint32_t));
                 std::memcpy(buf, &data[i + 1], sizeof(uint32_t));
                 i += 4;
                 break;
             }
-            case HW_MESSAGE_MAGIC_TYPE_SEQ: {
+            case AW_MESSAGE_MAGIC_TYPE_SEQ: {
                 buf = malloc(sizeof(uint32_t));
                 std::memcpy(buf, &data[i + 1], sizeof(uint32_t));
                 i += 4;
                 break;
             }
-            case HW_MESSAGE_MAGIC_TYPE_VARCHAR: {
+            case AW_MESSAGE_MAGIC_TYPE_VARCHAR: {
                 auto [strLen, len]     = g_messageParser->parseVarInt(std::span<const uint8_t>{&data[i + 1], data.size() - i - 1});
                 buf                    = malloc(sizeof(const char*));
                 auto& str              = strings.emplace_back(makeShared<std::string>(std::string_view{rc<const char*>(&data[i + len + 1]), strLen}));
@@ -447,17 +447,17 @@ void IWireObject::called(uint32_t id, const std::span<const uint8_t>& data, cons
                 i += strLen + len;
                 break;
             }
-            case HW_MESSAGE_MAGIC_TYPE_ARRAY: {
+            case AW_MESSAGE_MAGIC_TYPE_ARRAY: {
                 const auto arrType    = sc<eMessageMagic>(data[i + 1]);
                 auto [arrLen, lenLen] = g_messageParser->parseVarInt(std::span<const uint8_t>{&data[i + 2], data.size() - i});
                 size_t arrMessageLen  = 2 + lenLen;
 
                 switch (arrType) {
-                    case HW_MESSAGE_MAGIC_TYPE_UINT:
-                    case HW_MESSAGE_MAGIC_TYPE_F32:
-                    case HW_MESSAGE_MAGIC_TYPE_INT:
-                    case HW_MESSAGE_MAGIC_TYPE_OBJECT:
-                    case HW_MESSAGE_MAGIC_TYPE_SEQ: {
+                    case AW_MESSAGE_MAGIC_TYPE_UINT:
+                    case AW_MESSAGE_MAGIC_TYPE_F32:
+                    case AW_MESSAGE_MAGIC_TYPE_INT:
+                    case AW_MESSAGE_MAGIC_TYPE_OBJECT:
+                    case AW_MESSAGE_MAGIC_TYPE_SEQ: {
                         auto dataPtr  = rc<uint32_t*>(malloc(sizeof(uint32_t) * (arrLen == 0 ? 1 : arrLen)));
                         auto dataSlot = rc<uint32_t**>(malloc(sizeof(uint32_t**)));
                         auto sizeSlot = rc<uint32_t*>(malloc(sizeof(uint32_t)));
@@ -475,7 +475,7 @@ void IWireObject::called(uint32_t id, const std::span<const uint8_t>& data, cons
                         }
                         break;
                     }
-                    case HW_MESSAGE_MAGIC_TYPE_VARCHAR: {
+                    case AW_MESSAGE_MAGIC_TYPE_VARCHAR: {
                         auto dataPtr  = rc<const char**>(malloc(sizeof(const char*) * (arrLen == 0 ? 1 : arrLen)));
                         auto dataSlot = rc<const char***>(malloc(sizeof(const char***)));
                         auto sizeSlot = rc<uint32_t*>(malloc(sizeof(uint32_t)));
@@ -495,7 +495,7 @@ void IWireObject::called(uint32_t id, const std::span<const uint8_t>& data, cons
                         }
                         break;
                     }
-                    case HW_MESSAGE_MAGIC_TYPE_FD: {
+                    case AW_MESSAGE_MAGIC_TYPE_FD: {
                         auto dataPtr  = rc<int32_t*>(malloc(sizeof(int32_t) * (arrLen == 0 ? 1 : arrLen)));
                         auto dataSlot = rc<int32_t**>(malloc(sizeof(int32_t**)));
                         auto sizeSlot = rc<uint32_t*>(malloc(sizeof(uint32_t)));
@@ -524,13 +524,13 @@ void IWireObject::called(uint32_t id, const std::span<const uint8_t>& data, cons
                 i += arrMessageLen - 1 /* for loop does ++i*/;
                 break;
             }
-            case HW_MESSAGE_MAGIC_TYPE_OBJECT_ID: {
+            case AW_MESSAGE_MAGIC_TYPE_OBJECT_ID: {
                 const auto MSG = std::format("object type is not impld");
                 Debug::log(ERR, "core protocol error: {}", MSG);
                 error(m_id, MSG);
                 return;
             }
-            case HW_MESSAGE_MAGIC_TYPE_FD: {
+            case AW_MESSAGE_MAGIC_TYPE_FD: {
                 buf                = malloc(sizeof(int32_t));
                 *rc<int32_t*>(buf) = fds.at(fdNo++);
                 break;

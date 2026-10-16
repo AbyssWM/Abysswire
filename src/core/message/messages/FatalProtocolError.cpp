@@ -12,23 +12,23 @@
 using namespace Abysswire;
 
 CFatalErrorMessage::CFatalErrorMessage(const std::vector<uint8_t>& data, size_t offset) {
-    m_type = HW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR;
+    m_type = AW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR;
 
     try {
-        if (data.at(offset + 0) != HW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR)
+        if (data.at(offset + 0) != AW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR)
             return;
 
-        if (data.at(offset + 1) != HW_MESSAGE_MAGIC_TYPE_UINT)
+        if (data.at(offset + 1) != AW_MESSAGE_MAGIC_TYPE_UINT)
             return;
 
         std::memcpy(&m_objectId, &data.at(offset + 2), sizeof(m_objectId));
 
-        if (data.at(offset + 6) != HW_MESSAGE_MAGIC_TYPE_UINT)
+        if (data.at(offset + 6) != AW_MESSAGE_MAGIC_TYPE_UINT)
             return;
 
         std::memcpy(&m_errorId, &data.at(offset + 7), sizeof(m_errorId));
 
-        if (data.at(offset + 11) != HW_MESSAGE_MAGIC_TYPE_VARCHAR)
+        if (data.at(offset + 11) != AW_MESSAGE_MAGIC_TYPE_VARCHAR)
             return;
 
         size_t needle = 12;
@@ -41,7 +41,7 @@ CFatalErrorMessage::CFatalErrorMessage(const std::vector<uint8_t>& data, size_t 
 
         needle += strLen;
 
-        if (data.at(offset + needle) != HW_MESSAGE_MAGIC_END)
+        if (data.at(offset + needle) != AW_MESSAGE_MAGIC_END)
             return;
 
         m_len = needle + 1;
@@ -61,14 +61,14 @@ CFatalErrorMessage::CFatalErrorMessage(SP<IWireObject> obj, uint32_t errorId, co
 }
 
 CFatalErrorMessage::CFatalErrorMessage(uint32_t objectId, uint32_t errorId, const std::string_view& msg) {
-    m_type = HW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR;
+    m_type = AW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR;
 
-    m_data = {HW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR, HW_MESSAGE_MAGIC_TYPE_UINT, 0, 0, 0, 0, HW_MESSAGE_MAGIC_TYPE_UINT, 0, 0, 0, 0, HW_MESSAGE_MAGIC_TYPE_VARCHAR};
+    m_data = {AW_MESSAGE_TYPE_FATAL_PROTOCOL_ERROR, AW_MESSAGE_MAGIC_TYPE_UINT, 0, 0, 0, 0, AW_MESSAGE_MAGIC_TYPE_UINT, 0, 0, 0, 0, AW_MESSAGE_MAGIC_TYPE_VARCHAR};
 
     std::memcpy(&m_data[2], &objectId, sizeof(objectId));
     std::memcpy(&m_data[7], &errorId, sizeof(errorId));
 
     { const auto& r_ = g_messageParser->encodeVarInt(msg.size()); m_data.insert(m_data.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
     { const auto& r_ = msg; m_data.insert(m_data.end(), r_.begin(), r_.end()); } // GCC 14: no append_range
-    m_data.emplace_back(HW_MESSAGE_MAGIC_END);
+    m_data.emplace_back(AW_MESSAGE_MAGIC_END);
 }

@@ -47,10 +47,10 @@ namespace {
 
         const std::vector<SMethod>& c2s() override {
             static const std::vector<SMethod> methods = {
-                SMethod{.idx = 0, .params = {HW_MESSAGE_MAGIC_TYPE_VARCHAR}, .returnsType = "", .since = 0},
+                SMethod{.idx = 0, .params = {AW_MESSAGE_MAGIC_TYPE_VARCHAR}, .returnsType = "", .since = 0},
                 SMethod{.idx = 1, .params = {}, .returnsType = "child", .since = 0},
-                SMethod{.idx = 2, .params = {HW_MESSAGE_MAGIC_TYPE_FD}, .returnsType = "", .since = 0},
-                SMethod{.idx = 3, .params = {HW_MESSAGE_MAGIC_TYPE_ARRAY, HW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
+                SMethod{.idx = 2, .params = {AW_MESSAGE_MAGIC_TYPE_FD}, .returnsType = "", .since = 0},
+                SMethod{.idx = 3, .params = {AW_MESSAGE_MAGIC_TYPE_ARRAY, AW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
             };
 
             return methods;
@@ -58,7 +58,7 @@ namespace {
 
         const std::vector<SMethod>& s2c() override {
             static const std::vector<SMethod> methods = {
-                SMethod{.idx = 0, .params = {HW_MESSAGE_MAGIC_TYPE_VARCHAR}, .returnsType = "", .since = 0},
+                SMethod{.idx = 0, .params = {AW_MESSAGE_MAGIC_TYPE_VARCHAR}, .returnsType = "", .since = 0},
             };
 
             return methods;
@@ -73,7 +73,7 @@ namespace {
 
         const std::vector<SMethod>& c2s() override {
             static const std::vector<SMethod> methods = {
-                SMethod{.idx = 0, .params = {HW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
+                SMethod{.idx = 0, .params = {AW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
             };
 
             return methods;
@@ -81,7 +81,7 @@ namespace {
 
         const std::vector<SMethod>& s2c() override {
             static const std::vector<SMethod> methods = {
-                SMethod{.idx = 0, .params = {HW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
+                SMethod{.idx = 0, .params = {AW_MESSAGE_MAGIC_TYPE_UINT}, .returnsType = "", .since = 0},
             };
 
             return methods;
@@ -485,7 +485,7 @@ TEST(IntegrationCore, MalformedMessageDisconnectsClient) {
 
     ASSERT_TRUE(harness.waitForHandshake());
 
-    const std::array<uint8_t, 2> badMessage = {0xFF, HW_MESSAGE_MAGIC_END};
+    const std::array<uint8_t, 2> badMessage = {0xFF, AW_MESSAGE_MAGIC_END};
     ASSERT_EQ(write(harness.clientFD(), badMessage.data(), badMessage.size()), static_cast<ssize_t>(badMessage.size()));
 
     bool       disconnected = false;

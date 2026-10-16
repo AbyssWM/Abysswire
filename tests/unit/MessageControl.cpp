@@ -62,11 +62,11 @@ TEST(MessagesControl, RoundtripMessagesRoundtripParsesSeq) {
 
 TEST(MessagesControl, RoundtripRejectsMalformedPayload) {
     const std::vector<uint8_t> badReq = {
-        HW_MESSAGE_TYPE_ROUNDTRIP_REQUEST, HW_MESSAGE_MAGIC_TYPE_VARCHAR, 0x01, 'x', HW_MESSAGE_MAGIC_END,
+        AW_MESSAGE_TYPE_ROUNDTRIP_REQUEST, AW_MESSAGE_MAGIC_TYPE_VARCHAR, 0x01, 'x', AW_MESSAGE_MAGIC_END,
     };
 
     const std::vector<uint8_t> badDone = {
-        HW_MESSAGE_TYPE_ROUNDTRIP_DONE, HW_MESSAGE_MAGIC_TYPE_UINT, 0x01, 0x02, 0x03, 0x04, HW_MESSAGE_MAGIC_TYPE_UINT,
+        AW_MESSAGE_TYPE_ROUNDTRIP_DONE, AW_MESSAGE_MAGIC_TYPE_UINT, 0x01, 0x02, 0x03, 0x04, AW_MESSAGE_MAGIC_TYPE_UINT,
     };
 
     CRoundtripRequestMessage req(badReq, 0);

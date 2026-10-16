@@ -15,7 +15,7 @@ namespace Abysswire {
         virtual const std::vector<int>& fds() const;
 
         std::vector<uint8_t>            m_data;
-        eMessageType                    m_type = HW_MESSAGE_TYPE_INVALID;
+        eMessageType                    m_type = AW_MESSAGE_TYPE_INVALID;
         size_t                          m_len  = 0;
 
         std::string                     parseData() const;
